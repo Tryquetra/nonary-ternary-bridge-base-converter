@@ -1,5 +1,9 @@
-# www.robotstxt.org/
-
-# Allow crawling of all content
+# robots.txt for Nonary Arithmetic — Base Converter
+# Allow all well-behaved crawlers to index the site
 User-agent: *
-Disallow:
+Allow: /
+
+# No disallow rules; this site is fully indexable
+
+# Note: add a Sitemap line below if/when you generate sitemap.xml
+# Sitemap: https://your-domain.example/sitemap.xml
