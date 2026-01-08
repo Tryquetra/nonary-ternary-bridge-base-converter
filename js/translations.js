@@ -1,4 +1,4 @@
-const translations = {
+export const translations = {
     en: {
         // Meta
         pageTitle: "Nonary Arithmetic - Advanced Base Converter (Base 3, 9, 27 & Balanced)",

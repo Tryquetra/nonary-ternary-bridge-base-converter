@@ -1,18 +1,18 @@
-const HEPT_DIGITS = "0123456789ABCDEFGHKMNPRTVXZ";
+export const HEPT_DIGITS = "0123456789ABCDEFGHKMNPRTVXZ";
 
-const ternaryToNonaryMap = {
+export const ternaryToNonaryMap = {
     '++': '4', '+0': '3', '+-': '2',
     '0+': '1', '00': '0', '0-': 'Z',
     '-+': 'Y', '-0': 'X', '--': 'W'
 };
 
-const nonaryToTernaryMap = {
+export const nonaryToTernaryMap = {
     '4': '++', '3': '+0', '2': '+-',
     '1': '0+', '0': '00', 'Z': '0-',
     'Y': '-+', 'X': '-0', 'W': '--'
 };
 
-const balancedDigits = {
+export const balancedDigits = {
     3: { toStandard: { '-': -1, '0': 0, '+': 1 }, fromStandard: { '-1': '-', '0': '0', '1': '+' } },
     9: {
         toStandard: { 'W': -4, 'X': -3, 'Y': -2, 'Z': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4 },
@@ -20,7 +20,7 @@ const balancedDigits = {
     }
 };
 
-const getDigitValue = (char, base) => {
+export const getDigitValue = (char, base) => {
     const c = char.toUpperCase();
     if (base === 27) {
         return HEPT_DIGITS.indexOf(c);
@@ -29,7 +29,7 @@ const getDigitValue = (char, base) => {
     return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
 };
 
-const getDigitChar = (val, base) => {
+export const getDigitChar = (val, base) => {
     if (base === 27) {
         return HEPT_DIGITS[val];
     }
@@ -37,11 +37,11 @@ const getDigitChar = (val, base) => {
     return String.fromCharCode('A'.charCodeAt(0) + val - 10);
 };
 
-const formatBaseOutput = (arr, base) => {
+export const formatBaseOutput = (arr, base) => {
     return arr.map(d => getDigitChar(d, base)).join('');
 };
 
-const balancedToStandard = (value, base, i18n_func) => {
+export const balancedToStandard = (value, base, i18n_func) => {
     const steps = [];
     steps.push({
         type: 'balanced_conversion',
@@ -83,7 +83,7 @@ const balancedToStandard = (value, base, i18n_func) => {
     return { value, steps };
 };
 
-const standardToBalanced = (value, base, i18n_func) => {
+export const standardToBalanced = (value, base, i18n_func) => {
     const steps = [];
     steps.push({
         type: 'balanced_conversion',
@@ -133,7 +133,7 @@ const standardToBalanced = (value, base, i18n_func) => {
     return { value, steps };
 };
 
-const convertAdjacentBases = (digits, fromBase, toBase) => {
+export const convertAdjacentBases = (digits, fromBase, toBase) => {
     const allSteps = [];
     const result_digits = [];
     let current_digits = [...digits];
@@ -208,7 +208,7 @@ const convertAdjacentBases = (digits, fromBase, toBase) => {
     return { result: result_digits, steps: allSteps };
 };
 
-const convertViaNonary = (digits, fromBase, toBase) => {
+export const convertViaNonary = (digits, fromBase, toBase) => {
     const allSteps = [];
     if (fromBase === 10 && toBase === 3) {
         allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 10, to: 3, path: 'nonária' } });
@@ -241,7 +241,7 @@ const convertViaNonary = (digits, fromBase, toBase) => {
     return { result: [0], steps: [{ type: 'error', messageKey: 'errorNotOptimized', args: { from: fromBase, to: toBase } }] };
 };
 
-const convertViaPowerMapping = (digits, fromBase, toBase) => {
+export const convertViaPowerMapping = (digits, fromBase, toBase) => {
     const allSteps = [];
     if (fromBase === 27 && toBase === 3) {
         allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 27, to: 3, path: 'Heptavintimal' } });
@@ -274,7 +274,7 @@ const convertViaPowerMapping = (digits, fromBase, toBase) => {
     return { result: [0], steps: [] };
 };
 
-const analyzeComplexity = (from, to) => {
+export const analyzeComplexity = (from, to) => {
     const diff = Math.abs(to - from);
     if (from === to) return { time: 'O(d)', space: 'O(d)', descriptionKey: 'descIdentity', efficiencyKey: 'effLinear' };
     if ((from === 3 && to === 9) || (from === 9 && to === 3)) return { time: 'O(d)', space: 'O(d)', descriptionKey: 'descPowerMapping2', efficiencyKey: 'effOptimal' };
@@ -288,7 +288,7 @@ const analyzeComplexity = (from, to) => {
     return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descNotImplemented', efficiencyKey: 'effNotImplemented' };
 };
 
-const validateInput = (value, base, isBalanced) => {
+export const validateInput = (value, base, isBalanced) => {
     if (!value) return false;
     if (isBalanced) {
         if (base === 3) return /^[+\-0]+$/.test(value);

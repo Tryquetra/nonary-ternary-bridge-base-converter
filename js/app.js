@@ -1,5 +1,5 @@
-
-
+import { translations } from './translations.js';
+import * as converter from './converter.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- STATE ---
@@ -84,15 +84,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sBal) {
                     return sB === 3 ? '{-, 0, +}' : '{W, X, Y, Z, 0, 1, 2, 3, 4}';
                 }
-                return sB === 27 ? `Alfabeto Jones: ${HEPT_DIGITS}` : (sB <= 10 ? `{0-${sB - 1}}` : `{0-9, A-${getDigitChar(sB - 1, sB)}}`);
+                return sB === 27 ? `Alfabeto Jones: ${converter.HEPT_DIGITS}` : (sB <= 10 ? `{0-${sB - 1}}` : `{0-9, A-${converter.getDigitChar(sB - 1, sB)}}`);
             };
 
             if (sB === tB && sBal === tBal) {
-                if (!validateInput(state.inputValue, sB, sBal)) {
+                if (!converter.validateInput(state.inputValue, sB, sBal)) {
                     state.conversionSteps = [{ type: 'error', messageKey: 'errorInvalidInput', args: { chars: getValidChars() } }];
                     renderAll(); return;
                 }
-                state.complexity = analyzeComplexity(sB, tB);
+                state.complexity = converter.analyzeComplexity(sB, tB);
                 state.conversionSteps = [{ type: 'result', value: state.inputValue, base: tB, balanced: tBal }];
                 renderAll(); return;
             }
@@ -100,13 +100,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let processedInput = state.inputValue;
             const allSteps = [];
 
-            if (!validateInput(state.inputValue, sB, sBal)) {
+            if (!converter.validateInput(state.inputValue, sB, sBal)) {
                 state.conversionSteps = [{ type: 'error', messageKey: 'errorInvalidInput', args: { chars: getValidChars() } }];
                 renderAll(); return;
             }
 
             if (sBal && (sB === 3 || sB === 9)) {
-                const balConv = balancedToStandard(state.inputValue, sB, i18n);
+                const balConv = converter.balancedToStandard(state.inputValue, sB, i18n);
                 allSteps.push(...balConv.steps);
                 processedInput = balConv.value;
             }
@@ -119,55 +119,53 @@ document.addEventListener('DOMContentLoaded', () => {
             if (processedInput === '') processedInput = '0';
 
             for (let char of processedInput) {
-                const val = getDigitValue(char, sB);
+                const val = converter.getDigitValue(char, sB);
                 if (isNaN(val) || val === -1 || val >= sB) {
                     throw new Error(i18n('errorIllegalDigit', { char: char }));
                 }
                 digits.push(val);
             }
 
-            state.complexity = analyzeComplexity(sB, tB);
+            state.complexity = converter.analyzeComplexity(sB, tB);
 
             let conversion;
             const diff = Math.abs(tB - sB);
 
             if (diff === 1) {
-                conversion = convertAdjacentBases(digits, sB, tB);
+                conversion = converter.convertAdjacentBases(digits, sB, tB);
             } else if ((sB === 10 && tB === 3) || (sB === 3 && tB === 10)) {
-                conversion = convertViaNonary(digits, sB, tB);
+                conversion = converter.convertViaNonary(digits, sB, tB);
             } else if ((sB === 10 && tB === 2) || (sB === 2 && tB === 10)) {
-                // Logic for double bridge
                 allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 10, to: 2, path: 'dupla' } });
                 if (sB === 10) {
-                    const step1 = convertAdjacentBases(digits, 10, 9);
+                    const step1 = converter.convertAdjacentBases(digits, 10, 9);
                     allSteps.push(...step1.steps);
-                    allSteps.push({ type: 'intermediate', descriptionKey: 'stepIntermediateResult', args: { base: 9 }, value: formatBaseOutput(step1.result, 9) });
+                    allSteps.push({ type: 'intermediate', descriptionKey: 'stepIntermediateResult', args: { base: 9 }, value: converter.formatBaseOutput(step1.result, 9) });
                     const tDigits = [];
                     step1.result.forEach(d => tDigits.push(Math.floor(d / 3), d % 3));
                     while (tDigits.length > 1 && tDigits[0] === 0) tDigits.shift();
                     allSteps.push({ type: 'mapping', descriptionKey: 'stepMappingDesc2', mapping: step1.result.map(d => ({ nonary: d, ternary: `${Math.floor(d / 3)}${d % 3}` })) });
-                    conversion = convertAdjacentBases(tDigits, 3, 2);
+                    conversion = converter.convertAdjacentBases(tDigits, 3, 2);
                 } else {
-                    const step1 = convertAdjacentBases(digits, 2, 3);
+                    const step1 = converter.convertAdjacentBases(digits, 2, 3);
                     allSteps.push(...step1.steps);
                     const d3 = [...step1.result];
                     if (d3.length % 2 !== 0) d3.unshift(0);
                     const nDigits = [];
                     for (let i = 0; i < d3.length; i += 2) nDigits.push(d3[i] * 3 + d3[i + 1]);
                     allSteps.push({ type: 'grouping', descriptionKey: 'stepGroupingDesc2', groups: nDigits.map((d, i) => ({ from: `${d3[i * 2]}${d3[i * 2 + 1]}`, to: d })) });
-                    conversion = convertAdjacentBases(nDigits, 9, 10);
+                    conversion = converter.convertAdjacentBases(nDigits, 9, 10);
                 }
             } else if ((sB === 9 && tB === 2) || (sB === 2 && tB === 9)) {
-                // Logic for ternary bridge
                 allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: sB, to: tB, path: 'ternária' } });
                 if (sB === 9) {
                     const tDigits = [];
                     digits.forEach(d => tDigits.push(Math.floor(d / 3), d % 3));
                     while (tDigits.length > 1 && tDigits[0] === 0) tDigits.shift();
                     allSteps.push({ type: 'mapping', descriptionKey: 'stepMappingDesc2', mapping: digits.map(d => ({ nonary: d, ternary: `${Math.floor(d / 3)}${d % 3}` })) });
-                    conversion = convertAdjacentBases(tDigits, 3, 2);
+                    conversion = converter.convertAdjacentBases(tDigits, 3, 2);
                 } else {
-                    const step1 = convertAdjacentBases(digits, 2, 3);
+                    const step1 = converter.convertAdjacentBases(digits, 2, 3);
                     allSteps.push(...step1.steps);
                     const d3 = [...step1.result];
                     if (d3.length % 2 !== 0) d3.unshift(0);
@@ -178,11 +176,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             else if ((sB === 27 && tB === 3) || (sB === 3 && tB === 27)) {
-                conversion = convertViaPowerMapping(digits, sB, tB);
+                conversion = converter.convertViaPowerMapping(digits, sB, tB);
             }
             else if ((sB === 27 && tB === 9) || (sB === 9 && tB === 27)) {
                 if (sB === 27) {
-                    const step1 = convertViaPowerMapping(digits, 27, 3);
+                    const step1 = converter.convertViaPowerMapping(digits, 27, 3);
                     allSteps.push(...step1.steps);
                     const digits3 = step1.result;
                     if (digits3.length % 2 !== 0) digits3.unshift(0);
@@ -198,35 +196,35 @@ document.addEventListener('DOMContentLoaded', () => {
                     const digits3 = [];
                     digits.forEach(d => digits3.push(Math.floor(d / 3), d % 3));
                     allSteps.push({ type: 'mapping', descriptionKey: 'stepMappingDesc2', mapping: digits.map(d => ({ nonary: d, ternary: `${Math.floor(d / 3)}${d % 3}` })) });
-                    const step2 = convertViaPowerMapping(digits3, 3, 27);
+                    const step2 = converter.convertViaPowerMapping(digits3, 3, 27);
                     conversion = { result: step2.result, steps: step2.steps };
                 }
             }
             else if ((sB === 27 && tB === 10)) {
-                const step1 = convertViaPowerMapping(digits, 27, 3);
+                const step1 = converter.convertViaPowerMapping(digits, 27, 3);
                 allSteps.push(...step1.steps);
-                const step2 = convertViaNonary(step1.result, 3, 10);
+                const step2 = converter.convertViaNonary(step1.result, 3, 10);
                 allSteps.push(...step2.steps);
                 conversion = { result: step2.result, steps: [] };
             }
             else if ((sB === 10 && tB === 27)) {
-                const step1 = convertViaNonary(digits, 10, 3);
+                const step1 = converter.convertViaNonary(digits, 10, 3);
                 allSteps.push(...step1.steps);
-                const step2 = convertViaPowerMapping(step1.result, 3, 27);
+                const step2 = converter.convertViaPowerMapping(step1.result, 3, 27);
                 allSteps.push(...step2.steps);
                 conversion = { result: step2.result, steps: [] };
             }
             else if ((sB === 27 && tB === 2)) {
-                const step1 = convertViaPowerMapping(digits, 27, 3);
+                const step1 = converter.convertViaPowerMapping(digits, 27, 3);
                 allSteps.push(...step1.steps);
-                const step2 = convertAdjacentBases(step1.result, 3, 2);
+                const step2 = converter.convertAdjacentBases(step1.result, 3, 2);
                 allSteps.push(...step2.steps);
                 conversion = { result: step2.result, steps: [] };
             }
             else if ((sB === 2 && tB === 27)) {
-                const step1 = convertAdjacentBases(digits, 2, 3);
+                const step1 = converter.convertAdjacentBases(digits, 2, 3);
                 allSteps.push(...step1.steps);
-                const step2 = convertViaPowerMapping(step1.result, 3, 27);
+                const step2 = converter.convertViaPowerMapping(step1.result, 3, 27);
                 allSteps.push(...step2.steps);
                 conversion = { result: step2.result, steps: [] };
             }
@@ -238,10 +236,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (conversion) allSteps.push(...conversion.steps);
 
-            let finalResultStr = formatBaseOutput(conversion.result, tB);
+            let finalResultStr = converter.formatBaseOutput(conversion.result, tB);
 
             if (tBal && (tB === 3 || tB === 9)) {
-                const balConv = standardToBalanced(finalResultStr, tB, i18n);
+                const balConv = converter.standardToBalanced(finalResultStr, tB, i18n);
                 allSteps.push(...balConv.steps);
                 finalResultStr = balConv.value;
             }
