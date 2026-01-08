@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "test": "bun test",
-    "build": "bun build ./src/app.ts --outfile ./js/app.js --minify",
+    "build:app": "bun build ./src/app.ts --outfile ./js/app.js --minify",
+    "build:sw": "bun build ./src/sw.ts --outfile ./sw.js --minify",
+    "build": "bun run build:app && bun run build:sw",
     "dev": "bun build ./src/app.ts --outfile ./js/app.js --watch"
   },
   "devDependencies": {
