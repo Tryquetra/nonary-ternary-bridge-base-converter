@@ -80,6 +80,10 @@ export interface I18nSchema {
     errorInvalidInput: string;
     errorIllegalDigit: string;
     errorNotOptimized: string;
+    swapLabel: string;
+    copyTooltip: string;
+    copiedTooltip: string;
+    validationError: string;
 }
 
 export const translations: Record<string, I18nSchema> = {
@@ -164,7 +168,11 @@ export const translations: Record<string, I18nSchema> = {
         stepGroupingDesc3: "Grouping 3→27 (triplets of trits → base-27 digit)",
         errorInvalidInput: "Invalid input. Valid characters: {chars}",
         errorIllegalDigit: "Illegal digit: {char}",
-        errorNotOptimized: "Non-optimized path for {from} → {to}."
+        errorNotOptimized: "Non-optimized path for {from} → {to}.",
+        swapLabel: "Swap Bases",
+        copyTooltip: "Copy to clipboard",
+        copiedTooltip: "Copied!",
+        validationError: "Invalid characters for Base {base}"
     },
     pt: {
         pageTitle: "Aritmética Nonária - Conversor Avançado (Base 3, 9, 27 & Balanceada)",
@@ -247,6 +255,10 @@ export const translations: Record<string, I18nSchema> = {
         stepGroupingDesc3: "Agrupamento 3→27 (trios de trits → dígito base-27)",
         errorInvalidInput: "Entrada inválida. Caracteres válidos: {chars}",
         errorIllegalDigit: "Dígito ilegal: {char}",
-        errorNotOptimized: "Caminho não otimizado para {from} → {to}."
+        errorNotOptimized: "Caminho não otimizado para {from} → {to}.",
+        swapLabel: "Trocar Bases",
+        copyTooltip: "Copiar para área de transferência",
+        copiedTooltip: "Copiado!",
+        validationError: "Caracteres inválidos para Base {base}"
     }
 };

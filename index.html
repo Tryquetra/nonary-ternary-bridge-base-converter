@@ -166,8 +166,8 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
+                    <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4 items-end">
+                        <div class="w-full">
                             <label class="block text-sm text-slate-400 mb-2" data-i18n-key="sourceBaseLabel">Base de
                                 Origem</label>
                             <select id="sourceBase"
@@ -181,7 +181,11 @@
                             </label>
                         </div>
 
-                        <div>
+                        <button id="swapButton" class="mb-4 md:mb-8 p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 transition-colors" title="Swap Bases" aria-label="Swap Bases">
+                             <i data-lucide="arrow-left-right" class="w-5 h-5 text-cyan-400"></i>
+                        </button>
+
+                        <div class="w-full">
                             <label class="block text-sm text-slate-400 mb-2" data-i18n-key="targetBaseLabel">Base de
                                 Destino</label>
                             <select id="targetBase"

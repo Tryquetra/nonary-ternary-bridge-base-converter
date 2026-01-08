@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         targetBalancedWrapper: document.getElementById('targetBalancedWrapper') as HTMLElement,
         sourceBalancedHelp: document.getElementById('sourceBalancedHelp') as HTMLElement,
         heptavintimalHelp: document.getElementById('heptavintimalHelp') as HTMLElement,
+        swapButton: document.getElementById('swapButton') as HTMLButtonElement,
         convertButton: document.getElementById('convertButton') as HTMLButtonElement,
         complexityBox: document.getElementById('complexityBox') as HTMLElement,
         quickResultBox: document.getElementById('quickResultBox') as HTMLElement,
@@ -375,14 +376,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${i18n('quickResultTitle')}
                 </h2>
                 <div class="flex flex-col gap-2">
-                     <div class="flex items-center gap-3 bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                        <code class="text-green-300 font-mono text-2xl break-all">${resultStep.value}</code>
+                     <div class="relative flex items-center gap-3 bg-green-500/10 border border-green-500/30 rounded-lg p-4 group">
+                        <code id="resultValue" class="text-green-300 font-mono text-2xl break-all">${resultStep.value}</code>
+                        <button id="copyButton" class="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded bg-slate-800 text-slate-400 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity" title="${i18n('copyTooltip')}">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
                     </div>
                     <div class="text-slate-400 text-sm text-right">
                         ${i18n('stepBase')} ${resultStep.base}${balancedText}
                     </div>
                 </div>`;
         dom.quickResultBox.classList.remove('hidden');
+
+        // Attach copy listener
+        document.getElementById('copyButton')?.addEventListener('click', () => {
+             navigator.clipboard.writeText(resultStep.value).then(() => {
+                 const btn = document.getElementById('copyButton');
+                 if(btn) {
+                     const icon = btn.querySelector('i');
+                     if(icon) {
+                         // Temporary checkmark
+                         // Re-using lucide might be tricky if not re-run, so just simple replacement
+                         btn.innerHTML = '<span class="text-green-400 font-bold">✓</span>';
+                         setTimeout(() => {
+                             btn.innerHTML = '<i data-lucide="copy" class="w-4 h-4"></i>';
+                             if ((window as any).lucide) (window as any).lucide.createIcons();
+                         }, 2000);
+                     }
+                 }
+             });
+        });
     };
 
     const renderSteps = () => {
@@ -454,8 +477,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if ((window as any).lucide) (window as any).lucide.createIcons();
     };
 
+    const validateRealTime = () => {
+        const isValid = converter.validateInput(state.inputValue, state.sourceBase, state.sourceBalanced);
+        if (isValid) {
+            dom.inputValue.classList.remove('border-red-500', 'focus:border-red-500');
+            dom.inputValue.classList.add('border-slate-600', 'focus:border-blue-500');
+        } else {
+            dom.inputValue.classList.remove('border-slate-600', 'focus:border-blue-500');
+            dom.inputValue.classList.add('border-red-500', 'focus:border-red-500');
+        }
+    };
+
     // --- EVENT LISTENERS ---
-    dom.inputValue.addEventListener('input', (e) => state.inputValue = (e.target as HTMLInputElement).value);
+    dom.inputValue.addEventListener('input', (e) => {
+        state.inputValue = (e.target as HTMLInputElement).value;
+        validateRealTime();
+    });
+    
+    dom.swapButton.addEventListener('click', () => {
+        // Swap bases
+        const tempBase = state.sourceBase;
+        state.sourceBase = state.targetBase;
+        state.targetBase = tempBase;
+        
+        // Swap balanced toggle states
+        const tempBalanced = state.sourceBalanced;
+        state.sourceBalanced = state.targetBalanced;
+        state.targetBalanced = tempBalanced;
+
+        // Update DOM
+        dom.sourceBase.value = state.sourceBase.toString();
+        dom.targetBase.value = state.targetBase.toString();
+        dom.sourceBalanced.checked = state.sourceBalanced;
+        dom.targetBalanced.checked = state.targetBalanced;
+
+        updateBalancedUI();
+        validateRealTime();
+        // Optional: Perform conversion immediately after swap?
+        // performConversion(); 
+    });
+
     dom.sourceBase.addEventListener('change', (e) => {
         const newBase = parseInt((e.target as HTMLSelectElement).value);
         state.sourceBase = newBase;
@@ -464,6 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.sourceBalanced.checked = false;
         }
         updateBalancedUI();
+        validateRealTime();
     });
     dom.targetBase.addEventListener('change', (e) => {
         const newBase = parseInt((e.target as HTMLSelectElement).value);
@@ -477,6 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dom.sourceBalanced.addEventListener('change', (e) => {
         state.sourceBalanced = (e.target as HTMLInputElement).checked;
         updateBalancedUI();
+        validateRealTime();
     });
     dom.targetBalanced.addEventListener('change', (e) => state.targetBalanced = (e.target as HTMLInputElement).checked);
     dom.convertButton.addEventListener('click', performConversion);
@@ -507,6 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setLang(initialLang);
 
         updateBalancedUI();
+        validateRealTime();
         if ((window as any).lucide) (window as any).lucide.createIcons();
     };
 
