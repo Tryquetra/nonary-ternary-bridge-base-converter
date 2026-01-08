@@ -109,16 +109,47 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderAll(); return;
             }
 
-            let processedInput = state.inputValue;
-            const allSteps: converter.ConversionStep[] = [];
-
             if (!converter.validateInput(state.inputValue, sB, sBal)) {
                 state.conversionSteps = [{ type: 'error', messageKey: 'errorInvalidInput', args: { chars: getValidChars() } }];
                 renderAll(); return;
             }
 
+            // --- SIGN PROCESSING ---
+            let inputSign = 1;
+            let processedInput = state.inputValue;
+            let wasBalancedNegative = false; // Flag to track if balanced input was intrinsically negative
+
+            if (sBal) {
+                // Determine sign for Balanced Input
+                // Start from MSD (most significant digit) - first non-zero
+                // Base 3: '-' is negative. Base 9: W(-4), X(-3), Y(-2), Z(-1) are negative.
+                for (const char of processedInput) {
+                    if (char === '0') continue;
+                    if (sB === 3) {
+                        if (char === '-') { inputSign = -1; wasBalancedNegative = true; }
+                        break;
+                    } else if (sB === 9) {
+                        if (['W', 'X', 'Y', 'Z'].includes(char.toUpperCase())) { inputSign = -1; wasBalancedNegative = true; }
+                        break;
+                    }
+                }
+                if (inputSign === -1) {
+                    processedInput = converter.invertBalanced(processedInput, sB);
+                }
+            } else {
+                // Standard Input
+                if (processedInput.startsWith('-')) {
+                    inputSign = -1;
+                    processedInput = processedInput.substring(1);
+                }
+            }
+
+            // --- CONVERSION PIPELINE (ABSOLUTE VALUE) ---
+            const allSteps: converter.ConversionStep[] = [];
+
             if (sBal && (sB === 3 || sB === 9)) {
-                const balConv = converter.balancedToStandard(state.inputValue, sB, i18n);
+                // If it was negative, we already inverted it to be positive "processedInput"
+                const balConv = converter.balancedToStandard(processedInput, sB, i18n);
                 allSteps.push(...balConv.steps);
                 processedInput = balConv.value;
             }
@@ -250,10 +281,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let finalResultStr = converter.formatBaseOutput(conversion?.result || [], tB);
 
+            // --- SIGN RE-APPLICATION ---
             if (tBal && (tB === 3 || tB === 9)) {
+                // If we are balanced, convert absolute value first
                 const balConv = converter.standardToBalanced(finalResultStr, tB, i18n);
                 allSteps.push(...balConv.steps);
                 finalResultStr = balConv.value;
+
+                // If original input was negative, invert it back
+                if (inputSign === -1) {
+                    finalResultStr = converter.invertBalanced(finalResultStr, tB);
+                }
+            } else {
+                // Standard Target
+                if (inputSign === -1 && finalResultStr !== '0') {
+                    finalResultStr = '-' + finalResultStr;
+                }
             }
 
             allSteps.push({ type: 'result', value: finalResultStr, base: tB, balanced: tBal });
@@ -478,4 +521,3 @@ if ('serviceWorker' in navigator) {
             .catch(err => console.error('SW registration failed:', err));
     });
 }
-

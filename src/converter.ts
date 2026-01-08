@@ -80,6 +80,24 @@ export interface ConversionResult {
     steps: ConversionStep[];
 }
 
+export const invertBalanced = (value: string, base: number): string => {
+    if (base === 3) {
+        return value.split('').map(c => {
+            if (c === '+') return '-';
+            if (c === '-') return '+';
+            return c;
+        }).join('');
+    }
+    if (base === 9) {
+        const invMap: Record<string, string> = {
+            '4': 'W', '3': 'X', '2': 'Y', '1': 'Z', '0': '0',
+            'Z': '1', 'Y': '2', 'X': '3', 'W': '4'
+        };
+        return value.split('').map(c => invMap[c] || c).join('');
+    }
+    return value;
+};
+
 export const balancedToStandard = (value: string, base: number, i18n_func: (key: string) => string): { value: string, steps: ConversionStep[] } => {
     const steps: ConversionStep[] = [];
     steps.push({
@@ -133,7 +151,6 @@ export const standardToBalanced = (value: string, base: number, i18n_func: (key:
         }
         if (carry > 0) result.unshift('+');
 
-        // Trim leading zeros in balanced string
         let finalStr = result.join('').replace(/^0+(?=[+\-])/, '');
         if (finalStr === '') finalStr = '0';
 
@@ -347,7 +364,9 @@ export const validateInput = (value: string, base: number, isBalanced: boolean):
         if (base === 3) return /^[+\-0]+$/.test(value);
         if (base === 9) return /^[WXYZ01234]+$/.test(value);
     }
-    if (base === 27) return new RegExp(`^[${HEPT_DIGITS}]+$`, 'i').test(value);
+    const escapedValue = value.replace(/^-/, ''); // Temp remove sign for validation check
+    if (base === 27) return new RegExp(`^[${HEPT_DIGITS}]+$`, 'i').test(escapedValue) && new RegExp(`^\\-?[${HEPT_DIGITS}]+$`, 'i').test(value);
+
     const validDigits = '0123456789ABCDEF'.slice(0, base);
-    return new RegExp(`^[${validDigits}]+$`, 'i').test(value);
+    return new RegExp(`^\\-?[${validDigits}]+$`, 'i').test(value);
 };
