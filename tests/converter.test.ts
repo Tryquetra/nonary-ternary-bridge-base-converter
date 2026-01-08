@@ -125,4 +125,21 @@ describe("Base Converter Core Logic - Strict Verification", () => {
             expect(converter.validateInput("--10", 10, false)).toBe(false); // Double sign
         });
     });
+
+    describe("Formatting Edge Cases", () => {
+        const mockI18n = (key: string) => key;
+
+        test("standardToBalanced (Base 3) formats '000' as '0'", () => {
+            const result = converter.standardToBalanced("000", 3, mockI18n);
+            expect(result.value).toBe("0");
+        });
+
+        test("formatBaseOutput (Standard) formats '000' as '0'", () => {
+            expect(converter.formatBaseOutput([0, 0, 0], 10)).toBe("0");
+        });
+
+        test("balancedToStandard throws on invalid digit", () => {
+            expect(() => converter.balancedToStandard("2", 3, mockI18n)).toThrow("Invalid balanced digit: 2");
+        });
+    });
 });

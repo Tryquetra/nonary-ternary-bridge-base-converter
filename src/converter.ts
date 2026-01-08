@@ -109,7 +109,11 @@ export const balancedToStandard = (value: string, base: number, i18n_func: (key:
     const config = balancedDigits[base];
     if (!config) return { value, steps };
 
-    const digits = value.split('').map(d => config.toStandard[d] ?? 0);
+    const digits = value.split('').map(d => {
+        const val = config.toStandard[d];
+        if (val === undefined) throw new Error(`Invalid balanced digit: ${d}`);
+        return val;
+    });
     let carry = 0;
     const result: number[] = [];
     for (let i = digits.length - 1; i >= 0; i--) {
@@ -151,7 +155,7 @@ export const standardToBalanced = (value: string, base: number, i18n_func: (key:
         }
         if (carry > 0) result.unshift('+');
 
-        let finalStr = result.join('').replace(/^0+(?=[+\-])/, '');
+        let finalStr = result.join('').replace(/^0+/, '');
         if (finalStr === '') finalStr = '0';
 
         steps.push({
@@ -176,7 +180,7 @@ export const standardToBalanced = (value: string, base: number, i18n_func: (key:
         }
         if (carry > 0) result.unshift('1');
 
-        let finalStr = result.join('').replace(/^0+(?=[WXYZ1234])/, '');
+        let finalStr = result.join('').replace(/^0+/, '');
         if (finalStr === '') finalStr = '0';
 
         steps.push({
