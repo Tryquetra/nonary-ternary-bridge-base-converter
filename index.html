@@ -157,16 +157,9 @@
                         <input type="text" id="inputValue" value="1234"
                             class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
                             data-i18n-key="inputPlaceholder" placeholder="Digite um número" />
-                        <div id="sourceBalancedHelp" class="mt-2 text-xs text-cyan-400 hidden">
-                            <!-- Help text injected by JS -->
-                        </div>
-                        <div id="heptavintimalHelp" class="mt-2 text-xs text-yellow-400/80 hidden"
-                            data-i18n-key="heptavintimalHelp">
-                            Heptavintimal (Jones): 0-9, A-Z (exceto I, J, L, O, Q, S, U, W, Y)
-                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4 items-end">
+                    <div class="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-4 items-start">
                         <div class="w-full">
                             <label class="block text-sm text-slate-400 mb-2" data-i18n-key="sourceBaseLabel">Base de
                                 Origem</label>
@@ -179,10 +172,19 @@
                                 <span class="text-slate-400" data-i18n-key="useBalancedLabel">Usar forma
                                     balanceada</span>
                             </label>
+                            <div id="sourceBalancedHelp" class="mt-2 text-xs text-cyan-400 hidden">
+                                <!-- Help text injected by JS -->
+                            </div>
+                            <div id="heptavintimalHelp" class="mt-2 text-xs text-yellow-400/80 hidden"
+                                data-i18n-key="heptavintimalHelp">
+                                Heptavintimal (Jones): 0-9, A-Z (exceto I, J, L, O, Q, S, U, W, Y)
+                            </div>
                         </div>
 
-                        <button id="swapButton" class="mb-4 md:mb-8 p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 transition-colors" title="Swap Bases" aria-label="Swap Bases">
-                             <i data-lucide="arrow-left-right" class="w-5 h-5 text-cyan-400"></i>
+                        <button id="swapButton"
+                            class="mt-8 p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 transition-all active:scale-95 hover:rotate-12"
+                            title="Swap Bases" aria-label="Swap Bases">
+                            <i data-lucide="arrow-left-right" class="w-5 h-5 text-cyan-400"></i>
                         </button>
 
                         <div class="w-full">
