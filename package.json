@@ -1,0 +1,17 @@
+{
+  "name": "nonary-ternary-bridge-base-converter",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "bun test",
+    "build": "bun build ./src/app.ts --outfile ./js/app.js --minify",
+    "dev": "bun build ./src/app.ts --outfile ./js/app.js --watch"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

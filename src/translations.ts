@@ -1,13 +1,92 @@
-export const translations = {
-    en: {
-        // Meta
-        pageTitle: "Nonary Arithmetic - Advanced Base Converter (Base 3, 9, 27 & Balanced)",
+export interface I18nSchema {
+    pageTitle: string;
+    mainTitle: string;
+    subTitle: string;
+    configTitle: string;
+    inputLabel: string;
+    inputPlaceholder: string;
+    heptavintimalHelp: string;
+    sourceBaseLabel: string;
+    targetBaseLabel: string;
+    useBalancedLabel: string;
+    convertButton: string;
+    balancedTernaryHelp: string;
+    symmetricNonaryHelp: string;
+    complexityTitle: string;
+    quickResultTitle: string;
+    stepsTitle: string;
+    optimizedCasesTitle: string;
+    caseAdjacentTitle: string;
+    caseAdjacentDesc: string;
+    caseNonaryBridgeTitle: string;
+    caseNonaryBridgeDesc: string;
+    caseDoubleBridgeTitle: string;
+    caseDoubleBridgeDesc: string;
+    caseTernaryBridgeTitle: string;
+    caseTernaryBridgeDesc: string;
+    casePowersTitle: string;
+    casePowersDesc: string;
+    caseBalancedTitle: string;
+    caseBalancedDesc: string;
+    caseHeptaNonaryTitle: string;
+    caseHeptaNonaryDesc: string;
+    caseHeptaDecimalTitle: string;
+    caseHeptaDecimalDesc: string;
+    caseHeptaBinaryTitle: string;
+    caseHeptaBinaryDesc: string;
+    specialSystemsTitle: string;
+    balancedTernaryTitle: string;
+    balancedTernaryExample: string;
+    symmetricNonaryTitle: string;
+    symmetricNonaryDesc: string;
+    heptavintimalTitle: string;
+    heptavintimalAlphabet: string;
+    heptavintimalDesc: string;
+    descIdentity: string;
+    descPowerMapping2: string;
+    descPowerMapping3: string;
+    descPowerMappingCompound: string;
+    descQuadraticP: string;
+    descBridgeNonary: string;
+    descBridgeDouble: string;
+    descBridgeHeptaDecimal: string;
+    descBridgeHeptaBinary: string;
+    descNotImplemented: string;
+    effLinear: string;
+    effOptimal: string;
+    effOptimalQuadratic: string;
+    effNotImplemented: string;
+    stepInput: string;
+    stepResult: string;
+    stepBase: string;
+    stepBalanced: string;
+    stepBalancedConversion: string;
+    stepBalancedFrom: string;
+    stepBalancedTo: string;
+    stepStandardTo: string;
+    stepOriginal: string;
+    stepConverted: string;
+    stepBridgeStart: string;
+    stepStartPtoP: string;
+    stepStartMethod: string;
+    stepIntermediate: string;
+    stepIntermediateResult: string;
+    stepMapping: string;
+    stepGrouping: string;
+    stepMappingDesc2: string;
+    stepMappingDesc3: string;
+    stepGroupingDesc2: string;
+    stepGroupingDesc3: string;
+    errorInvalidInput: string;
+    errorIllegalDigit: string;
+    errorNotOptimized: string;
+}
 
-        // Header
+export const translations: Record<string, I18nSchema> = {
+    en: {
+        pageTitle: "Nonary Arithmetic - Advanced Base Converter (Base 3, 9, 27 & Balanced)",
         mainTitle: "Nonary Arithmetic",
         subTitle: "p→p±1 Algorithm and Power Mappings (Base 3, 9, 27)",
-
-        // Config Box
         configTitle: "Configuration",
         inputLabel: "Input Number",
         inputPlaceholder: "Enter a number",
@@ -16,17 +95,11 @@ export const translations = {
         targetBaseLabel: "Target Base",
         useBalancedLabel: "Use balanced form",
         convertButton: "Convert",
-
-        // Help Text
         balancedTernaryHelp: "Balanced Ternary: - = -1, 0 = 0, + = +1",
         symmetricNonaryHelp: "Symmetric Nonary: W=-4, X=-3, Y=-2, Z=-1, 0-4",
-
-        // Results & Steps
         complexityTitle: "Complexity Analysis",
         quickResultTitle: "Result",
         stepsTitle: "Conversion Steps",
-
-        // Static Info Footer
         optimizedCasesTitle: "Optimized Special Cases",
         caseAdjacentTitle: "Adjacent Bases (p↔p±1)",
         caseAdjacentDesc: "O(n²) Algorithm - Synthetic division",
@@ -41,13 +114,11 @@ export const translations = {
         caseBalancedTitle: "Balanced Representations",
         caseBalancedDesc: "O(d) conversion (linear per digit)",
         caseHeptaNonaryTitle: "Hepta-Nonary Bridge (27↔9)",
-        caseHeptaNonaryTitle: "Hepta-Nonary Bridge (27↔9)",
         caseHeptaNonaryDesc: "O(d) mapping (via O(d) + O(d))",
         caseHeptaDecimalTitle: "Hepta-Decimal Bridge (27↔10)",
         caseHeptaDecimalDesc: "O(n²) path",
         caseHeptaBinaryTitle: "Hepta-Binary Bridge (27↔2)",
         caseHeptaBinaryDesc: "O(n²) path",
-
         specialSystemsTitle: "Special Number Systems",
         balancedTernaryTitle: "Balanced Ternary (Base 3)",
         balancedTernaryExample: "Example: +0- = (+1)×3² + 0×3¹ + (-1)×3⁰ = 9 - 1 = 8₁₀",
@@ -56,8 +127,6 @@ export const translations = {
         heptavintimalTitle: "Heptavintimal (Base 27)",
         heptavintimalAlphabet: "Jones' Alphabet",
         heptavintimalDesc: "Efficient packing for 3 trits (3³ = 27). Avoids ambiguous letters (I, J, L, O, Q, S, U, W, Y).",
-
-        // Dynamic Complexity
         descIdentity: "Identity (No-op)",
         descPowerMapping2: "Power Mapping (9=3²)",
         descPowerMapping3: "Power Mapping (27=3³) - Heptavintimal",
@@ -68,60 +137,39 @@ export const translations = {
         descBridgeHeptaDecimal: "Via Nonary Bridge (27↔3↔9↔10)",
         descBridgeHeptaBinary: "Via Ternary Bridge (27↔3↔2)",
         descNotImplemented: "Non-optimized path",
-
         effLinear: "Linear",
         effOptimal: "Optimal",
         effOptimalQuadratic: "Optimal (O(n²))",
         effNotImplemented: "Not Implemented",
-
-        // Dynamic Steps
         stepInput: "Input:",
         stepResult: "Result:",
         stepBase: "Base",
         stepBalanced: "(Balanced)",
-        // {from} -> {to}
         stepBalancedConversion: "Converting from {from} to {to}",
         stepBalancedFrom: "balanced",
         stepBalancedTo: "standard",
         stepStandardTo: "balanced",
         stepOriginal: "Original:",
         stepConverted: "Converted:",
-        // {from} -> {to}
         stepBridgeStart: "Conversion {from}→{to} via {path} bridge",
-        // {from}, {to}, {method}
         stepStartPtoP: "p→p±1 Algorithm: Base {from} to {to}",
         stepStartMethod: "{method} (Synthetic division by {divisor})",
-        // {remainder}, {char}, {quotient}
         stepIntermediate: "Remainder {remainder} ({char}). Quotient: [ {quotient} ]",
-        // {base}
         stepIntermediateResult: "Intermediate Result (Base {base})",
-        // {from} -> {to}
         stepMapping: "Mapping {from}→{to}",
-        // {from} -> {to}
         stepGrouping: "Grouping {from}→{to}",
-        // {value}
         stepMappingDesc2: "Mapping 9→3 (each base-9 digit = 2 trits)",
         stepMappingDesc3: "Mapping 27→3 (each base-27 digit = 3 trits)",
         stepGroupingDesc2: "Grouping 3→9 (pairs of trits → base-9 digit)",
         stepGroupingDesc3: "Grouping 3→27 (triplets of trits → base-27 digit)",
-
-        // Errors
-        // {chars}
         errorInvalidInput: "Invalid input. Valid characters: {chars}",
-        // {char}
         errorIllegalDigit: "Illegal digit: {char}",
-        // {from}, {to}
         errorNotOptimized: "Non-optimized path for {from} → {to}."
     },
     pt: {
-        // Meta
         pageTitle: "Aritmética Nonária - Conversor Avançado (Base 3, 9, 27 & Balanceada)",
-
-        // Header
         mainTitle: "Aritmética Nonária",
         subTitle: "Algoritmo p→p±1 e Mapeamentos de Potência (Base 3, 9, 27)",
-
-        // Config Box
         configTitle: "Configuração",
         inputLabel: "Número de Entrada",
         inputPlaceholder: "Digite um número",
@@ -130,17 +178,11 @@ export const translations = {
         targetBaseLabel: "Base de Destino",
         useBalancedLabel: "Usar forma balanceada",
         convertButton: "Converter",
-
-        // Help Text
         balancedTernaryHelp: "Ternário balanceado: - = -1, 0 = 0, + = +1",
         symmetricNonaryHelp: "Nonário simétrico: W=-4, X=-3, Y=-2, Z=-1, 0-4",
-
-        // Results & Steps
         complexityTitle: "Análise de Complexidade",
         quickResultTitle: "Resultado",
         stepsTitle: "Passos da Conversão",
-
-        // Static Info Footer
         optimizedCasesTitle: "Casos Especiais Otimizados",
         caseAdjacentTitle: "Bases Adjacentes (p↔p±1)",
         caseAdjacentDesc: "Algoritmo O(n²) - Divisão sintética",
@@ -160,7 +202,6 @@ export const translations = {
         caseHeptaDecimalDesc: "Caminho O(n²)",
         caseHeptaBinaryTitle: "Ponte Hepta-Binário (27↔2)",
         caseHeptaBinaryDesc: "Caminho O(n²)",
-
         specialSystemsTitle: "Sistemas Numéricos Especiais",
         balancedTernaryTitle: "Ternário Balanceado (Base 3)",
         balancedTernaryExample: "Exemplo: +0- = (+1)×3² + 0×3¹ + (-1)×3⁰ = 9 - 1 = 8₁₀",
@@ -169,8 +210,6 @@ export const translations = {
         heptavintimalTitle: "Heptavintimal (Base 27)",
         heptavintimalAlphabet: "Alfabeto de Jones",
         heptavintimalDesc: "Compactação eficiente para 3 trits (3³ = 27). Evita letras ambíguas (I, J, L, O, Q, S, U, W, Y).",
-
-        // Dynamic Complexity
         descIdentity: "Identidade (Não-operacional)",
         descPowerMapping2: "Mapeamento Potência (9=3²)",
         descPowerMapping3: "Mapeamento Potência (27=3³) - Heptavintimal",
@@ -181,49 +220,33 @@ export const translations = {
         descBridgeHeptaDecimal: "Via Ponte Nonária (27↔3↔9↔10)",
         descBridgeHeptaBinary: "Via Ponte Ternária (27↔3↔2)",
         descNotImplemented: "Caminho não otimizado",
-
         effLinear: "Linear",
         effOptimal: "Ótima",
         effOptimalQuadratic: "Ótima (O(n²))",
         effNotImplemented: "Não Implementada",
-
-        // Dynamic Steps
         stepInput: "Entrada:",
         stepResult: "Resultado:",
         stepBase: "Base",
         stepBalanced: "(Balanceada)",
-        // {from} -> {to}
         stepBalancedConversion: "Convertendo de {from} para {to}",
         stepBalancedFrom: "balanceada",
         stepBalancedTo: "padrão",
         stepStandardTo: "balanceada",
         stepOriginal: "Original:",
         stepConverted: "Convertido:",
-        // {from} -> {to}
         stepBridgeStart: "Conversão {from}→{to} via ponte {path}",
-        // {from}, {to}, {method}
         stepStartPtoP: "Algoritmo p→p±1: Base {from} para {to}",
         stepStartMethod: "{method} (Divisão sintética por {divisor})",
-        // {remainder}, {char}, {quotient}
         stepIntermediate: "Resto {remainder} ({char}). Quociente: [ {quotient} ]",
-        // {base}
         stepIntermediateResult: "Resultado Intermediário (Base {base})",
-        // {from} -> {to}
         stepMapping: "Mapeamento {from}→{to}",
-        // {from} -> {to}
         stepGrouping: "Agrupamento {from}→{to}",
-        // {value}
         stepMappingDesc2: "Mapeamento 9→3 (cada dígito base-9 = 2 trits)",
         stepMappingDesc3: "Mapeamento 27→3 (cada dígito base-27 = 3 trits)",
         stepGroupingDesc2: "Agrupamento 3→9 (pares de trits → dígito base-9)",
         stepGroupingDesc3: "Agrupamento 3→27 (trios de trits → dígito base-27)",
-
-        // Errors
-        // {chars}
         errorInvalidInput: "Entrada inválida. Caracteres válidos: {chars}",
-        // {char}
         errorIllegalDigit: "Dígito ilegal: {char}",
-        // {from}, {to}
         errorNotOptimized: "Caminho não otimizado para {from} → {to}."
     }
 };

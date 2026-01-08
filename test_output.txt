@@ -1,0 +1,25 @@
+bun test v1.3.5 (1e86cebd)
+
+tests\converter.test.ts:
+(pass) Base Converter Core Logic - Strict Verification > getDigitValue returns correct values (including case sensitivity)
+(pass) Base Converter Core Logic - Strict Verification > getDigitChar returns correct characters (strict check)
+(pass) Base Converter Core Logic - Strict Verification > formatBaseOutput joins digits and trims correctly [16.00ms]
+(pass) Base Converter Core Logic - Strict Verification > Balanced Conversions (Stability & Signs) > balancedToStandard (Base 3) - Strict
+(pass) Base Converter Core Logic - Strict Verification > Balanced Conversions (Stability & Signs) > standardToBalanced (Base 3) - Strict
+(pass) Base Converter Core Logic - Strict Verification > Balanced Conversions (Stability & Signs) > balancedToStandard (Base 9) - Strict
+(pass) Base Converter Core Logic - Strict Verification > Synthetic Division Algorithm (pÔåÆp┬▒1) > Base 10 to 2 (Extreme jump, but iterative)
+(pass) Base Converter Core Logic - Strict Verification > Synthetic Division Algorithm (pÔåÆp┬▒1) > Base 9 to 10 (pÔåÆp+1)
+(pass) Base Converter Core Logic - Strict Verification > Synthetic Division Algorithm (pÔåÆp┬▒1) > Edge Case: Zero
+(pass) Base Converter Core Logic - Strict Verification > Bridge & Power Algorithms > Base 10 to 3 (Nonary Bridge)
+(pass) Base Converter Core Logic - Strict Verification > Bridge & Power Algorithms > Base 27 to 9 (via 3)
+(pass) Base Converter Core Logic - Strict Verification > Validation Regex > Base 27 validation
+
+tests\i18n.test.ts:
+(pass) Internationalization Data > English and Portuguese have identical keys
+(pass) Internationalization Data > All i18n values are non-empty
+(pass) Internationalization Data > Meta strings are correct
+
+ 15 pass
+ 0 fail
+ 207 expect() calls
+Ran 15 tests across 2 files. [55.00ms]
