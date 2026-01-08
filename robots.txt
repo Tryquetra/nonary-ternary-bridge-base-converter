@@ -1,26 +1,9 @@
 # robots.txt for Nonary Arithmetic — Base Converter
 # Allow all well-behaved crawlers to index the site
-# Allow all well-behaved crawlers to index the site
 User-agent: *
-Allow: /
-
-# Specifically allow AI crawlers
-User-agent: GPTBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: CCBot
-Allow: /
-
-User-agent: PerplexityBot
 Allow: /
 
 # No disallow rules; this site is fully indexable
 
-# Sitemap: https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/sitemap.xml
-Sitemap: https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/sitemap.xml
+# Note: add a Sitemap line below if/when you generate sitemap.xml
+# Sitemap: https://your-domain.example/sitemap.xml
