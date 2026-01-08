@@ -5,1349 +5,836 @@
   See LICENSE file at the project root for full text.
 -->
 <html lang="en" class="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Allow indexing by search engines -->
     <meta name="robots" content="index, follow">
-    <!-- Título será atualizado por JS -->
+    <meta name="description"
+        content="Professional-grade numerical base converter specializing in Nonary (Base 9), balanced Ternary (Base 3), and Heptavintimal (Base 27). High-efficiency p→p±1 arithmetic algorithms.">
+    <meta name="keywords"
+        content="base converter, nonary arithmetic, balanced ternary, heptavintimal, numeral systems, base 3, base 9, base 27, math tools, computer science">
+    <meta name="author" content="Robson Cassiano">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/">
+    <meta property="og:title" content="Nonary Arithmetic - High Performance Base Converter">
+    <meta property="og:description"
+        content="Convert between standard and balanced bases (3, 9, 27) using optimized mathematical bridges and synthetic division.">
+    <meta property="og:image"
+        content="https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/icon.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/">
+    <meta property="twitter:title" content="Nonary Arithmetic - High Performance Base Converter">
+    <meta property="twitter:description"
+        content="Convert between standard and balanced bases (3, 9, 27) using optimized mathematical bridges and synthetic division.">
+    <meta property="twitter:image"
+        content="https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/icon.png">
+
     <title data-i18n-key="pageTitle">Nonary Arithmetic - Base Converter</title>
-    <!-- PWA manifest and theme color -->
     <link rel="manifest" href="site.webmanifest">
+    <link rel="canonical" href="https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/">
     <meta name="google-site-verification" content="ekiCj-BYrs6PxWFgSAtehtlDp01duFf2BDbmR1mNcPU" />
     <meta name="theme-color" content="#0f172a">
-    <!-- Optional: explicit license link -->
+
+    <!-- Structured Data (JSON-LD) for AEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Nonary Arithmetic - Base Converter",
+      "url": "https://robson-cassiano.github.io/nonary-ternary-bridge-base-converter-1/",
+      "description": "Professional base converter for Nonary (Base 9), Ternary (Base 3), and Heptavintimal (Base 27) systems using O(n²) and O(n) algorithms.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "author": {
+        "@type": "Person",
+        "name": "Robson Cassiano"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "How to convert from decimal to balanced ternary?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The conversion uses a standard-to-balanced algorithm with O(n) complexity. It processes digits and applies a carry whenever a digit exceeds half of the base (3/2 = 1.5)."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What is Heptavintimal (Base 27)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Heptavintimal is a base-27 system. This tool uses the Jones alphabet (0-9, A-Z excluding ambiguous characters like I, J, L, O, Q, S, U, W, Y) to represent three ternary digits (trits) in a single character."
+        }
+      }]
+    }
+    </script>
     <link rel="license" href="LICENSE">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
     <style>
-        /* Custom scrollbar for dark theme */
         ::-webkit-scrollbar {
             width: 10px;
         }
+
         ::-webkit-scrollbar-track {
-            background: #1e293b; /* slate-800 */
+            background: #1e293b;
         }
+
         ::-webkit-scrollbar-thumb {
-            background: #334155; /* slate-700 */
+            background: #334155;
             border-radius: 5px;
         }
+
         ::-webkit-scrollbar-thumb:hover {
-            background: #475569; /* slate-600 */
+            background: #475569;
         }
+
         body {
             font-family: 'Inter', sans-serif;
         }
     </style>
 </head>
+
 <body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-8">
 
-<!-- **** O div com posicionamento 'absolute' foi removido daqui **** -->
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center py-4 border-b border-slate-700/50 mb-8">
+            <div class="flex items-center gap-3">
+                <i data-lucide="binary" class="text-blue-400 w-8 h-8"></i>
+                <div class="text-xl font-bold tracking-tight">NonaryBridge</div>
+            </div>
+            <div>
+                <select id="langSelector"
+                    class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500 cursor-pointer">
+                </select>
+            </div>
+        </header>
 
-<div class="max-w-6xl mx-auto">
-    <!-- **** INÍCIO DA ADIÇÃO: Header para o Seletor de Idioma **** -->
-    <header class="flex justify-start py-2">
-        <div>
-            <select id="langSelector" class="w-full bg-slate-900 border border-slate-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue-500">
-                <!-- Options added by JS -->
-            </select>
-        </div>
-    </header>
-    <!-- **** FIM DA ADIÇÃO **** -->
+        <main>
 
-    <!-- O 'pt-10 md:pt-0' foi removido do div abaixo para corrigir o fluxo -->
-    <div class="mb-8"> <!-- Padding top para mobile para não sobrepor o seletor -->
-        <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent" data-i18n-key="mainTitle">
-            Aritmética Nonária
-        </h1>
-        <p class="text-slate-400" data-i18n-key="subTitle">
-            Algoritmo p→p±1 e Mapeamentos de Potência (Base 3, 9, 27)
-        </p>
-    </div>
 
-    <div class="grid md:grid-cols-2 gap-6 mb-8">
-        <!-- Left Column: Configuration -->
-        <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 h-fit">
-            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                <i data-lucide="calculator" class="w-5 h-5 text-blue-400"></i>
-                <span data-i18n-key="configTitle">Configuração</span>
-            </h2>
+            <div class="mb-8">
+                <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"
+                    data-i18n-key="mainTitle">
+                    Aritmética Nonária
+                </h1>
+                <p class="text-slate-400" data-i18n-key="subTitle">
+                    Algoritmo p→p±1 e Mapeamentos de Potência (Base 3, 9, 27)
+                </p>
+            </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm text-slate-400 mb-2" data-i18n-key="inputLabel">Número de Entrada</label>
-                    <input
-                            type="text"
-                            id="inputValue"
-                            value="1234"
-                            class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
-                            data-i18n-key="inputPlaceholder"
-                            placeholder="Digite um número"
-                    />
-                    <div id="sourceBalancedHelp" class="mt-2 text-xs text-cyan-400 hidden">
-                        <!-- Help text injected by JS -->
-                    </div>
-                    <div id="heptavintimalHelp" class="mt-2 text-xs text-yellow-400/80 hidden" data-i18n-key="heptavintimalHelp">
-                        Heptavintimal (Jones): 0-9, A-Z (exceto I, J, L, O, Q, S, U, W, Y)
-                    </div>
-                </div>
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 h-fit">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <i data-lucide="calculator" class="w-5 h-5 text-blue-400"></i>
+                        <span data-i18n-key="configTitle">Configuração</span>
+                    </h2>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm text-slate-400 mb-2" data-i18n-key="sourceBaseLabel">Base de Origem</label>
-                        <select
-                                id="sourceBase"
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-slate-400 mb-2" data-i18n-key="inputLabel">Número de
+                                Entrada</label>
+                            <input type="text" id="inputValue" value="1234"
                                 class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
-                        >
-                            <!-- Options injected by JS -->
-                        </select>
-                        <label id="sourceBalancedWrapper" class="flex items-center gap-2 mt-2 text-sm hidden">
-                            <input
-                                    type="checkbox"
-                                    id="sourceBalanced"
-                                    class="rounded"
-                            />
-                            <span class="text-slate-400" data-i18n-key="useBalancedLabel">Usar forma balanceada</span>
-                        </label>
-                    </div>
+                                data-i18n-key="inputPlaceholder" placeholder="Digite um número" />
+                            <div id="sourceBalancedHelp" class="mt-2 text-xs text-cyan-400 hidden"></div>
+                            <div id="heptavintimalHelp" class="mt-2 text-xs text-yellow-400/80 hidden"
+                                data-i18n-key="heptavintimalHelp">
+                                Heptavintimal (Jones): 0-9, A-Z (exceto I, J, L, O, Q, S, U, W, Y)
+                            </div>
+                        </div>
 
-                    <div>
-                        <label class="block text-sm text-slate-400 mb-2" data-i18n-key="targetBaseLabel">Base de Destino</label>
-                        <select
-                                id="targetBase"
-                                class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
-                        >
-                            <!-- Options injected by JS -->
-                        </select>
-                        <label id="targetBalancedWrapper" class="flex items-center gap-2 mt-2 text-sm hidden">
-                            <input
-                                    type="checkbox"
-                                    id="targetBalanced"
-                                    class="rounded"
-                            />
-                            <span class="text-slate-400" data-i18n-key="useBalancedLabel">Usar forma balanceada</span>
-                        </label>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2" data-i18n-key="sourceBaseLabel">Base de
+                                    Origem</label>
+                                <select id="sourceBase"
+                                    class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"></select>
+                                <label id="sourceBalancedWrapper" class="flex items-center gap-2 mt-2 text-sm hidden">
+                                    <input type="checkbox" id="sourceBalanced" class="rounded" />
+                                    <span class="text-slate-400" data-i18n-key="useBalancedLabel">Usar forma
+                                        balanceada</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2" data-i18n-key="targetBaseLabel">Base de
+                                    Destino</label>
+                                <select id="targetBase"
+                                    class="w-full bg-slate-900 border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"></select>
+                                <label id="targetBalancedWrapper" class="flex items-center gap-2 mt-2 text-sm hidden">
+                                    <input type="checkbox" id="targetBalanced" class="rounded" />
+                                    <span class="text-slate-400" data-i18n-key="useBalancedLabel">Usar forma
+                                        balanceada</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button id="convertButton"
+                            class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded-lg px-6 py-3 font-semibold transition-all"
+                            data-i18n-key="convertButton">
+                            Converter
+                        </button>
                     </div>
                 </div>
 
-                <button
-                        id="convertButton"
-                        class="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 rounded-lg px-6 py-3 font-semibold transition-all"
-                        data-i18n-key="convertButton"
-                >
-                    Converter
-                </button>
-            </div>
-        </div>
-
-        <!-- Right Column: Complexity & Quick Result -->
-        <div class="space-y-6">
-            <div id="complexityBox" class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 hidden">
-                <!-- Complexity analysis injected by JS -->
+                <div class="space-y-6">
+                    <div id="complexityBox"
+                        class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 hidden"></div>
+                    <div id="quickResultBox"
+                        class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 hidden"></div>
+                </div>
             </div>
 
-            <!-- New Quick Result Box -->
-            <div id="quickResultBox" class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 hidden">
-                <!-- Quick Result injected by JS -->
+            <div id="stepsContainerWrapper"
+                class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 hidden">
+                <h2 class="text-xl font-semibold mb-4" data-i18n-key="stepsTitle">Passos da Conversão</h2>
+                <div id="stepsContainer" class="space-y-3"></div>
             </div>
-        </div>
+
+            <div class="mt-8 bg-slate-800/30 backdrop-blur rounded-xl p-6 border border-slate-700">
+                <h3 class="text-lg font-semibold mb-3 text-cyan-400" data-i18n-key="optimizedCasesTitle">Casos Especiais
+                    Otimizados</h3>
+                <div class="grid md:grid-cols-3 gap-4 text-sm mb-6">
+                    <div class="bg-slate-900/50 p-4 rounded-lg">
+                        <div class="font-semibold text-blue-400 mb-2" data-i18n-key="caseAdjacentTitle">Bases Adjacentes
+                            (p↔p±1)</div>
+                        <div class="text-slate-400" data-i18n-key="caseAdjacentDesc">Algoritmo O(n²) - Divisão sintética
+                        </div>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg">
+                        <div class="font-semibold text-green-400 mb-2" data-i18n-key="caseNonaryBridgeTitle">Ponte
+                            Nonária
+                            (10↔3)</div>
+                        <div class="text-slate-400 mb-2" data-i18n-key="caseNonaryBridgeDesc">Caminho O(n²) (via O(n²) +
+                            O(d))</div>
+                        <div class="text-xs text-slate-500 font-mono">10 ↔ 9 (O(n²)) ↔ 3 (O(d))</div>
+                    </div>
+                    <div class="bg-slate-900/50 p-4 rounded-lg">
+                        <div class="font-semibold text-emerald-400 mb-2" data-i18n-key="caseDoubleBridgeTitle">Ponte
+                            Dupla
+                            (10↔2)</div>
+                        <div class="text-slate-400 mb-2" data-i18n-key="caseDoubleBridgeDesc">Caminho O(n²) (via pontes
+                            9 e
+                            3)</div>
+                        <div class="text-xs text-slate-500 font-mono">10 ↔ 9 (O(n²)) ↔ 3 (O(d)) ↔ 2 (O(n²))</div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-purple-400 mb-3" data-i18n-key="specialSystemsTitle">Sistemas
+                        Numéricos
+                        Especiais</h4>
+                    <div class="grid md:grid-cols-3 gap-4 text-sm">
+                        <section>
+                            <div class="text-cyan-400 font-semibold mb-2" data-i18n-key="balancedTernaryTitle">Ternário
+                                Balanceado (Base 3)</div>
+                            <div class="bg-slate-800 p-3 rounded font-mono text-xs space-y-1">
+                                <div><span class="text-purple-400">-</span> <span class="text-slate-500">=</span> <span
+                                        class="text-slate-300">-1</span></div>
+                                <div><span class="text-purple-400">0</span> <span class="text-slate-500">=</span> <span
+                                        class="text-slate-300">0</span></div>
+                                <div><span class="text-purple-400">+</span> <span class="text-slate-500">=</span> <span
+                                        class="text-slate-300">+1</span></div>
+                            </div>
+                        </section>
+                        <section>
+                            <div class="text-cyan-400 font-semibold mb-2" data-i18n-key="symmetricNonaryTitle">Nonário
+                                Simétrico (Base 9)</div>
+                            <div class="bg-slate-800 p-3 rounded font-mono text-xs">
+                                <span class="text-purple-400">W X Y Z 0 1 2 3 4</span>
+                            </div>
+                        </section>
+                        <section>
+                            <div class="text-cyan-400 font-semibold mb-2" data-i18n-key="heptavintimalTitle">
+                                Heptavintimal
+                                (Base 27)</div>
+                            <div class="bg-slate-800 p-3 rounded font-mono text-xs break-all">
+                                0123456789ABCDEFGHKMNPRTVXZ
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+
+            <section class="mt-8">
+                <h3 class="text-lg font-semibold mb-4 text-cyan-400" data-i18n-key="faqTitle">Perguntas Frequentes (FAQ)
+                </h3>
+                <div class="space-y-4">
+                    <details class="bg-slate-900/50 rounded-lg p-2 border border-slate-700/30 group">
+                        <summary
+                            class="font-medium cursor-pointer p-2 list-none flex justify-between items-center text-slate-200 group-hover:text-blue-400 transition-colors">
+                            <span data-i18n-key="q1">Como funciona a conversão para Ternário Balanceado?</span>
+                            <i data-lucide="chevron-down"
+                                class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 pt-2 text-sm text-slate-400 leading-relaxed" data-i18n-key="a1">
+                            A conversão utiliza um algoritmo de complexidade O(n) que ajusta cada dígito standard (0, 1,
+                            2) para a forma balanceada (-1, 0, 1), aplicando um transporte ('carry') sempre que o valor
+                            excede a metade da base (1.5).
+                        </div>
+                    </details>
+                    <details class="bg-slate-900/50 rounded-lg p-2 border border-slate-700/30 group">
+                        <summary
+                            class="font-medium cursor-pointer p-2 list-none flex justify-between items-center text-slate-200 group-hover:text-blue-400 transition-colors">
+                            <span data-i18n-key="q2">O que é Heptavintimal (Base 27)?</span>
+                            <i data-lucide="chevron-down"
+                                class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 pt-2 text-sm text-slate-400 leading-relaxed" data-i18n-key="a2">
+                            Heptavintimal é um sistema de base 27. Este software utiliza o alfabeto de Jones (0-9, A-Z
+                            excluindo I, J, L, O, Q, S, U, W, Y) para representar trios de dígitos ternários (trits) de
+                            forma compacta e sem ambiguidades visuais.
+                        </div>
+                    </details>
+                    <details class="bg-slate-900/50 rounded-lg p-2 border border-slate-700/30 group">
+                        <summary
+                            class="font-medium cursor-pointer p-2 list-none flex justify-between items-center text-slate-200 group-hover:text-blue-400 transition-colors">
+                            <span data-i18n-key="q3">Por que usar a Ponte Nonária?</span>
+                            <i data-lucide="chevron-down"
+                                class="w-4 h-4 transition-transform group-open:rotate-180"></i>
+                        </summary>
+                        <div class="px-4 pb-4 pt-2 text-sm text-slate-400 leading-relaxed" data-i18n-key="a3">
+                            A Ponte Nonária (via Base 9) é o caminho mais eficiente para converter entre sistemas
+                            decimais e ternários, aproveitando que 9 = 3², permitindo mapeamentos lineares rápidos após
+                            uma única conversão quadrática inicial.
+                        </div>
+                    </details>
+                </div>
+            </section>
+        </main>
+
+        <footer class="mt-16 pb-8 text-center text-slate-500 text-sm border-t border-slate-700/30 pt-8">
+            <div class="flex justify-center gap-6 mb-4">
+                <a href="https://github.com/robson-cassiano" target="_blank"
+                    class="hover:text-blue-400 transition-colors">GitHub</a>
+                <a href="LICENSE" class="hover:text-blue-400 transition-colors" data-i18n-key="licenseLink">MIT
+                    License</a>
+            </div>
+            <p>&copy; 2025 Robson Cassiano. <span data-i18n-key="footerTagline">Professional Arithmetic Tools for Base
+                    3, 9, and 27.</span></p>
+        </footer>
     </div>
 
-    <div id="stepsContainerWrapper" class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border border-slate-700 hidden">
-        <h2 class="text-xl font-semibold mb-4" data-i18n-key="stepsTitle">Passos da Conversão</h2>
-        <div id="stepsContainer" class="space-y-3">
-            <!-- Conversion steps injected by JS -->
-        </div>
-    </div>
-
-
-    <!-- Static Info Section -->
-    <div class="mt-8 bg-slate-800/30 backdrop-blur rounded-xl p-6 border border-slate-700">
-        <h3 class="text-lg font-semibold mb-3 text-cyan-400" data-i18n-key="optimizedCasesTitle">Casos Especiais Otimizados</h3>
-        <div class="grid md:grid-cols-3 gap-4 text-sm mb-6">
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-blue-400 mb-2" data-i18n-key="caseAdjacentTitle">Bases Adjacentes (p↔p±1)</div>
-                <div class="text-slate-400" data-i18n-key="caseAdjacentDesc">Algoritmo O(n²) - Divisão sintética</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-green-400 mb-2" data-i18n-key="caseNonaryBridgeTitle">Ponte Nonária (10↔3)</div>
-                <div class="text-slate-400 mb-2" data-i18n-key="caseNonaryBridgeDesc">Caminho O(n²) (via O(n²) + O(d))</div>
-                <div class="text-xs text-slate-500 font-mono">10 ↔ 9 (O(n²)) ↔ 3 (O(d))</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-emerald-400 mb-2" data-i18n-key="caseDoubleBridgeTitle">Ponte Dupla (10↔2)</div>
-                <div class="text-slate-400 mb-2" data-i18n-key="caseDoubleBridgeDesc">Caminho O(n²) (via pontes 9 e 3)</div>
-                <div class="text-xs text-slate-500 font-mono">10 ↔ 9 (O(n²)) ↔ 3 (O(d)) ↔ 2 (O(n²))</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-cyan-400 mb-2" data-i18n-key="caseTernaryBridgeTitle">Ponte Ternária (9↔2)</div>
-                <div class="text-slate-400" data-i18n-key="caseTernaryBridgeDesc">Caminho O(n²) (via O(d) + O(n²))</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-yellow-400 mb-2" data-i18n-key="casePowersTitle">Potências (9↔3, 27↔3)</div>
-                <div class="text-slate-400" data-i18n-key="casePowersDesc">Mapeamento O(d) (linear por dígito). Base 27 (Heptavintimal) usa alfabeto de Jones.</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-purple-400 mb-2" data-i18n-key="caseBalancedTitle">Representações Balanceadas</div>
-                <div class="text-slate-400" data-i18n-key="caseBalancedDesc">Conversão O(d) (linear por dígito)</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-rose-400 mb-2" data-i18n-key="caseHeptaNonaryTitle">Ponte Hepta-Nonário (27↔9)</div>
-                <div class="text-slate-400 mb-2" data-i18n-key="caseHeptaNonaryDesc">Mapeamento O(d) (via O(d) + O(d))</div>
-                <div class="text-xs text-slate-500 font-mono">27 ↔ 3 (O(d)) ↔ 9 (O(d))</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-indigo-400 mb-2" data-i18n-key="caseHeptaDecimalTitle">Ponte Hepta-Decimal (27↔10)</div>
-                <div class="text-slate-400 mb-2" data-i18n-key="caseHeptaDecimalDesc">Caminho O(n²)</div>
-                <div class="text-xs text-slate-500 font-mono">27 ↔ 3 ↔ 9 ↔ 10 (O(n²))</div>
-            </div>
-            <div class="bg-slate-900/50 p-4 rounded-lg">
-                <div class="font-semibold text-lime-400 mb-2" data-i18n-key="caseHeptaBinaryTitle">Ponte Hepta-Binário (27↔2)</div>
-                <div class="text-slate-400 mb-2" data-i18n-key="caseHeptaBinaryDesc">Caminho O(n²)</div>
-                <div class="text-xs text-slate-500 font-mono">27 ↔ 3 (O(d)) ↔ 2 (O(n²))</div>
-            </div>
-        </div>
-
-        <div class="bg-slate-900/50 p-4 rounded-lg">
-            <h4 class="font-semibold text-purple-400 mb-3" data-i18n-key="specialSystemsTitle">Sistemas Numéricos Especiais</h4>
-            <div class="grid md:grid-cols-3 gap-4 text-sm">
-                <div>
-                    <div class="text-cyan-400 font-semibold mb-2" data-i18n-key="balancedTernaryTitle">Ternário Balanceado (Base 3)</div>
-                    <div class="bg-slate-800 p-3 rounded font-mono text-xs space-y-1">
-                        <div><span class="text-purple-400">-</span> <span class="text-slate-500">=</span> <span class="text-slate-300">-1</span></div>
-                        <div><span class="text-purple-400">0</span> <span class="text-slate-500">=</span> <span class="text-slate-300">0</span></div>
-                        <div><span class="text-purple-400">+</span> <span class="text-slate-500">=</span> <span class="text-slate-300">+1</span></div>
-                    </div>
-                    <div class="text-slate-400 mt-2 text-xs" data-i18n-key="balancedTernaryExample">
-                        Exemplo: +0- = (+1)×3² + 0×3¹ + (-1)×3⁰ = 9 - 1 = 8₁₀
-                    </div>
-                </div>
-                <div>
-                    <div class="text-cyan-400 font-semibold mb-2" data-i18n-key="symmetricNonaryTitle">Nonário Simétrico (Base 9)</div>
-                    <div class="bg-slate-800 p-3 rounded font-mono text-xs space-y-1">
-                        <div><span class="text-purple-400">W</span> <span class="text-slate-500">=</span> <span class="text-slate-300">-4</span>, <span class="text-purple-400">X</span> <span class="text-slate-500">=</span> <span class="text-slate-300">-3</span>, <span class="text-purple-400">Y</span> <span class="text-slate-500">=</span> <span class="text-slate-300">-2</span>, <span class="text-purple-400">Z</span> <span class="text-slate-500">=</span> <span class="text-slate-300">-1</span></div>
-                        <div><span class="text-purple-400">0</span> <span class="text-slate-500">=</span> <span class="text-slate-300">0</span></div>
-                        <div><span class="text-purple-400">1</span> <span class="text-slate-500">=</span> <span class="text-slate-300">+1</span>, <span class="text-purple-400">2</span> <span class="text-slate-500">=</span> <span class="text-slate-300">+2</span>, <span class="text-purple-400">3</span> <span class="text-slate-500">=</span> <span class="text-slate-300">+3</span>, <span class="text-purple-400">4</span> <span class="text-slate-500">=</span> <span class="text-slate-300">+4</span></div>
-                    </div>
-                    <div class="text-slate-400 mt-2 text-xs" data-i18n-key="symmetricNonaryDesc">
-                        Mapeamento direto (2 trits balanceados) para Base 3 Balanceada.
-                    </div>
-                </div>
-                <div>
-                    <div class="text-cyan-400 font-semibold mb-2" data-i18n-key="heptavintimalTitle">Heptavintimal (Base 27)</div>
-                    <div class="bg-slate-800 p-3 rounded font-mono text-xs space-y-1">
-                        <div class="text-purple-400" data-i18n-key="heptavintimalAlphabet">Alfabeto de Jones</div>
-                        <div class="text-slate-300 break-all">0123456789ABCDEFGHKMNPRTVXZ</div>
-                    </div>
-                    <div class="text-slate-400 mt-2 text-xs" data-i18n-key="heptavintimalDesc">
-                        Compactação eficiente para 3 trits (3³ = 27).
-                        Evita letras ambíguas (I, J, L, O, Q, S, U, W, Y).
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // **** INÍCIO DA SEÇÃO I18N ****
-
-    const translations = {
-        en: {
-            // Meta
-            pageTitle: "Nonary Arithmetic - Base Converter",
-
-            // Header
-            mainTitle: "Nonary Arithmetic",
-            subTitle: "p→p±1 Algorithm and Power Mappings (Base 3, 9, 27)",
-
-            // Config Box
-            configTitle: "Configuration",
-            inputLabel: "Input Number",
-            inputPlaceholder: "Enter a number",
-            heptavintimalHelp: "Heptavintimal (Jones): 0-9, A-Z (except I, J, L, O, Q, S, U, W, Y)",
-            sourceBaseLabel: "Source Base",
-            targetBaseLabel: "Target Base",
-            useBalancedLabel: "Use balanced form",
-            convertButton: "Convert",
-
-            // Help Text
-            balancedTernaryHelp: "Balanced Ternary: - = -1, 0 = 0, + = +1",
-            symmetricNonaryHelp: "Symmetric Nonary: W=-4, X=-3, Y=-2, Z=-1, 0-4",
-
-            // Results & Steps
-            complexityTitle: "Complexity Analysis",
-            quickResultTitle: "Result",
-            stepsTitle: "Conversion Steps",
-
-            // Static Info Footer
-            optimizedCasesTitle: "Optimized Special Cases",
-            caseAdjacentTitle: "Adjacent Bases (p↔p±1)",
-            caseAdjacentDesc: "O(n²) Algorithm - Synthetic division",
-            caseNonaryBridgeTitle: "Nonary Bridge (10↔3)",
-            caseNonaryBridgeDesc: "O(n²) path (via O(n²) + O(d))",
-            caseDoubleBridgeTitle: "Double Bridge (10↔2)",
-            caseDoubleBridgeDesc: "O(n²) path (via bridges 9 and 3)",
-            caseTernaryBridgeTitle: "Ternary Bridge (9↔2)",
-            caseTernaryBridgeDesc: "O(n²) path (via O(d) + O(n²))",
-            casePowersTitle: "Powers (9↔3, 27↔3)",
-            casePowersDesc: "O(d) mapping (linear per digit). Base 27 (Heptavintimal) uses Jones' alphabet.",
-            caseBalancedTitle: "Balanced Representations",
-            caseBalancedDesc: "O(d) conversion (linear per digit)",
-            caseHeptaNonaryTitle: "Hepta-Nonary Bridge (27↔9)",
-            caseHeptaNonaryDesc: "O(d) mapping (via O(d) + O(d))",
-            caseHeptaDecimalTitle: "Hepta-Decimal Bridge (27↔10)",
-            caseHeptaDecimalDesc: "O(n²) path",
-            caseHeptaBinaryTitle: "Hepta-Binary Bridge (27↔2)",
-            caseHeptaBinaryDesc: "O(n²) path",
-
-            specialSystemsTitle: "Special Number Systems",
-            balancedTernaryTitle: "Balanced Ternary (Base 3)",
-            balancedTernaryExample: "Example: +0- = (+1)×3² + 0×3¹ + (-1)×3⁰ = 9 - 1 = 8₁₀",
-            symmetricNonaryTitle: "Symmetric Nonary (Base 9)",
-            symmetricNonaryDesc: "Direct mapping (2 balanced trits) to Balanced Base 3.",
-            heptavintimalTitle: "Heptavintimal (Base 27)",
-            heptavintimalAlphabet: "Jones' Alphabet",
-            heptavintimalDesc: "Efficient packing for 3 trits (3³ = 27). Avoids ambiguous letters (I, J, L, O, Q, S, U, W, Y).",
-
-            // Dynamic Complexity
-            descIdentity: "Identity (No-op)",
-            descPowerMapping2: "Power Mapping (9=3²)",
-            descPowerMapping3: "Power Mapping (27=3³) - Heptavintimal",
-            descPowerMappingCompound: "Compound Mapping via Base 3 (9↔3↔27)",
-            descQuadraticP: "Quadratic - p→p±1 Algorithm",
-            descBridgeNonary: "Nonary Bridge (10↔9↔3)",
-            descBridgeDouble: "Double Bridge (10↔9↔3↔2)",
-            descBridgeHeptaDecimal: "Via Nonary Bridge (27↔3↔9↔10)",
-            descBridgeHeptaBinary: "Via Ternary Bridge (27↔3↔2)",
-            descNotImplemented: "Non-optimized path",
-
-            effLinear: "Linear",
-            effOptimal: "Optimal",
-            effOptimalQuadratic: "Optimal (O(n²))",
-            effNotImplemented: "Not Implemented",
-
-            // Dynamic Steps
-            stepInput: "Input:",
-            stepResult: "Result:",
-            stepBase: "Base",
-            stepBalanced: "(Balanced)",
-            // {from} -> {to}
-            stepBalancedConversion: "Converting from {from} to {to}",
-            stepBalancedFrom: "balanced",
-            stepBalancedTo: "standard",
-            stepStandardTo: "balanced",
-            stepOriginal: "Original:",
-            stepConverted: "Converted:",
-            // {from} -> {to}
-            stepBridgeStart: "Conversion {from}→{to} via {path} bridge",
-            // {from}, {to}, {method}
-            stepStartPtoP: "p→p±1 Algorithm: Base {from} to {to}",
-            stepStartMethod: "{method} (Synthetic division by {divisor})",
-            // {remainder}, {char}, {quotient}
-            stepIntermediate: "Remainder {remainder} ({char}). Quotient: [ {quotient} ]",
-            // {base}
-            stepIntermediateResult: "Intermediate Result (Base {base})",
-            // {from} -> {to}
-            stepMapping: "Mapping {from}→{to}",
-            // {from} -> {to}
-            stepGrouping: "Grouping {from}→{to}",
-            // {value}
-            stepMappingDesc2: "Mapping 9→3 (each base-9 digit = 2 trits)",
-            stepMappingDesc3: "Mapping 27→3 (each base-27 digit = 3 trits)",
-            stepGroupingDesc2: "Grouping 3→9 (pairs of trits → base-9 digit)",
-            stepGroupingDesc3: "Grouping 3→27 (triplets of trits → base-27 digit)",
-
-            // Errors
-            // {chars}
-            errorInvalidInput: "Invalid input. Valid characters: {chars}",
-            // {char}
-            errorIllegalDigit: "Illegal digit: {char}",
-            // {from}, {to}
-            errorNotOptimized: "Non-optimized path for {from} → {to}."
-        },
-        pt: {
-            // Meta
-            pageTitle: "Aritmética Nonária - Conversor de Base",
-
-            // Header
-            mainTitle: "Aritmética Nonária",
-            subTitle: "Algoritmo p→p±1 e Mapeamentos de Potência (Base 3, 9, 27)",
-
-            // Config Box
-            configTitle: "Configuração",
-            inputLabel: "Número de Entrada",
-            inputPlaceholder: "Digite um número",
-            heptavintimalHelp: "Heptavintimal (Jones): 0-9, A-Z (exceto I, J, L, O, Q, S, U, W, Y)",
-            sourceBaseLabel: "Base de Origem",
-            targetBaseLabel: "Base de Destino",
-            useBalancedLabel: "Usar forma balanceada",
-            convertButton: "Converter",
-
-            // Help Text
-            balancedTernaryHelp: "Ternário balanceado: - = -1, 0 = 0, + = +1",
-            symmetricNonaryHelp: "Nonário simétrico: W=-4, X=-3, Y=-2, Z=-1, 0-4",
-
-            // Results & Steps
-            complexityTitle: "Análise de Complexidade",
-            quickResultTitle: "Resultado",
-            stepsTitle: "Passos da Conversão",
-
-            // Static Info Footer
-            optimizedCasesTitle: "Casos Especiais Otimizados",
-            caseAdjacentTitle: "Bases Adjacentes (p↔p±1)",
-            caseAdjacentDesc: "Algoritmo O(n²) - Divisão sintética",
-            caseNonaryBridgeTitle: "Ponte Nonária (10↔3)",
-            caseNonaryBridgeDesc: "Caminho O(n²) (via O(n²) + O(d))",
-            caseDoubleBridgeTitle: "Ponte Dupla (10↔2)",
-            caseDoubleBridgeDesc: "Caminho O(n²) (via pontes 9 e 3)",
-            caseTernaryBridgeTitle: "Ponte Ternária (9↔2)",
-            caseTernaryBridgeDesc: "Caminho O(n²) (via O(d) + O(n²))",
-            casePowersTitle: "Potências (9↔3, 27↔3)",
-            casePowersDesc: "Mapeamento O(d) (linear por dígito). Base 27 (Heptavintimal) usa alfabeto de Jones.",
-            caseBalancedTitle: "Representações Balanceadas",
-            caseBalancedDesc: "Conversão O(d) (linear por dígito)",
-            caseHeptaNonaryTitle: "Ponte Hepta-Nonário (27↔9)",
-            caseHeptaNonaryDesc: "Mapeamento O(d) (via O(d) + O(d))",
-            caseHeptaDecimalTitle: "Ponte Hepta-Decimal (27↔10)",
-            caseHeptaDecimalDesc: "Caminho O(n²)",
-            caseHeptaBinaryTitle: "Ponte Hepta-Binário (27↔2)",
-            caseHeptaBinaryDesc: "Caminho O(n²)",
-
-            specialSystemsTitle: "Sistemas Numéricos Especiais",
-            balancedTernaryTitle: "Ternário Balanceado (Base 3)",
-            balancedTernaryExample: "Exemplo: +0- = (+1)×3² + 0×3¹ + (-1)×3⁰ = 9 - 1 = 8₁₀",
-            symmetricNonaryTitle: "Nonário Simétrico (Base 9)",
-            symmetricNonaryDesc: "Mapeamento direto (2 trits balanceados) para Base 3 Balanceada.",
-            heptavintimalTitle: "Heptavintimal (Base 27)",
-            heptavintimalAlphabet: "Alfabeto de Jones",
-            heptavintimalDesc: "Compactação eficiente para 3 trits (3³ = 27). Evita letras ambíguas (I, J, L, O, Q, S, U, W, Y).",
-
-            // Dynamic Complexity
-            descIdentity: "Identidade (Não-operacional)",
-            descPowerMapping2: "Mapeamento Potência (9=3²)",
-            descPowerMapping3: "Mapeamento Potência (27=3³) - Heptavintimal",
-            descPowerMappingCompound: "Mapeamento Composto via Base 3 (9↔3↔27)",
-            descQuadraticP: "Quadrático - Algoritmo p→p±1",
-            descBridgeNonary: "Ponte nonária (10↔9↔3)",
-            descBridgeDouble: "Ponte dupla (10↔9↔3↔2)",
-            descBridgeHeptaDecimal: "Via Ponte Nonária (27↔3↔9↔10)",
-            descBridgeHeptaBinary: "Via Ponte Ternária (27↔3↔2)",
-            descNotImplemented: "Caminho não otimizado",
-
-            effLinear: "Linear",
-            effOptimal: "Ótima",
-            effOptimalQuadratic: "Ótima (O(n²))",
-            effNotImplemented: "Não Implementada",
-
-            // Dynamic Steps
-            stepInput: "Entrada:",
-            stepResult: "Resultado:",
-            stepBase: "Base",
-            stepBalanced: "(Balanceada)",
-            // {from} -> {to}
-            stepBalancedConversion: "Convertendo de {from} para {to}",
-            stepBalancedFrom: "balanceada",
-            stepBalancedTo: "padrão",
-            stepStandardTo: "balanceada",
-            stepOriginal: "Original:",
-            stepConverted: "Convertido:",
-            // {from} -> {to}
-            stepBridgeStart: "Conversão {from}→{to} via ponte {path}",
-            // {from}, {to}, {method}
-            stepStartPtoP: "Algoritmo p→p±1: Base {from} para {to}",
-            stepStartMethod: "{method} (Divisão sintética por {divisor})",
-            // {remainder}, {char}, {quotient}
-            stepIntermediate: "Resto {remainder} ({char}). Quociente: [ {quotient} ]",
-            // {base}
-            stepIntermediateResult: "Resultado Intermediário (Base {base})",
-            // {from} -> {to}
-            stepMapping: "Mapeamento {from}→{to}",
-            // {from} -> {to}
-            stepGrouping: "Agrupamento {from}→{to}",
-            // {value}
-            stepMappingDesc2: "Mapeamento 9→3 (cada dígito base-9 = 2 trits)",
-            stepMappingDesc3: "Mapeamento 27→3 (cada dígito base-27 = 3 trits)",
-            stepGroupingDesc2: "Agrupamento 3→9 (pares de trits → dígito base-9)",
-            stepGroupingDesc3: "Agrupamento 3→27 (trios de trits → dígito base-27)",
-
-            // Errors
-            // {chars}
-            errorInvalidInput: "Entrada inválida. Caracteres válidos: {chars}",
-            // {char}
-            errorIllegalDigit: "Dígito ilegal: {char}",
-            // {from}, {to}
-            errorNotOptimized: "Caminho não otimizado para {from} → {to}."
-        }
-    };
-
-    // **** FIM DA SEÇÃO I18N ****
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-        // --- STATE ---
-        let state = {
-            inputValue: '1234',
-            sourceBase: 10,
-            targetBase: 3,
-            sourceBalanced: false,
-            targetBalanced: false,
-            conversionSteps: [],
-            complexity: null,
-            currentLang: 'en' // Default language
-        };
-
-        // --- CONSTANTS ---
-        const HEPT_DIGITS = "0123456789ABCDEFGHKMNPRTVXZ";
-
-        const ternaryToNonaryMap = {
-            '++': '4', '+0': '3', '+-': '2',
-            '0+': '1', '00': '0', '0-': 'Z',
-            '-+': 'Y', '-0': 'X', '--': 'W'
-        };
-
-        const nonaryToTernaryMap = {
-            '4': '++', '3': '+0', '2': '+-',
-            '1': '0+', '0': '00', 'Z': '0-',
-            'Y': '-+', 'X': '-0', 'W': '--'
-        };
-
-        const balancedDigits = {
-            3: { toStandard: { '-': -1, '0': 0, '+': 1 }, fromStandard: { '-1': '-', '0': '0', '1': '+' } },
-            9: {
-                toStandard: { 'W': -4, 'X': -3, 'Y': -2, 'Z': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4 },
-                fromStandard: { '-4': 'W', '-3': 'X', '-2': 'Y', '-1': 'Z', '0': '0', '1': '1', '2': '2', '3': '3', '4': '4' }
-            }
-        };
-
-        // --- DOM ELEMENTS ---
-        const dom = {
-            langSelector: document.getElementById('langSelector'),
-            inputValue: document.getElementById('inputValue'),
-            sourceBase: document.getElementById('sourceBase'),
-            targetBase: document.getElementById('targetBase'),
-            sourceBalanced: document.getElementById('sourceBalanced'),
-            targetBalanced: document.getElementById('targetBalanced'),
-            sourceBalancedWrapper: document.getElementById('sourceBalancedWrapper'),
-            targetBalancedWrapper: document.getElementById('targetBalancedWrapper'),
-            sourceBalancedHelp: document.getElementById('sourceBalancedHelp'),
-            heptavintimalHelp: document.getElementById('heptavintimalHelp'),
-            convertButton: document.getElementById('convertButton'),
-            complexityBox: document.getElementById('complexityBox'),
-            quickResultBox: document.getElementById('quickResultBox'),
-            stepsContainerWrapper: document.getElementById('stepsContainerWrapper'),
-            stepsContainer: document.getElementById('stepsContainer'),
-        };
-
-        // --- I18N CORE FUNCTIONS ---
-
-        // Gets a translated string by key, handling simple replacements
-        const i18n = (key, args = {}) => {
-            let text = translations[state.currentLang][key] || key;
-            for (const argKey in args) {
-                text = text.replace(`{${argKey}}`, args[argKey]);
-            }
-            return text;
-        };
-
-        // Sets the language and updates all UI elements
-        const setLang = (lang) => {
-            if (lang !== 'en' && lang !== 'pt') {
-                lang = 'en';
-            }
-            state.currentLang = lang;
-            document.documentElement.lang = lang;
-            dom.langSelector.value = lang;
-
-            // Update all static elements with data-i18n-key
-            document.querySelectorAll('[data-i18n-key]').forEach(el => {
-                const key = el.dataset.i18nKey;
-                const translation = i18n(key);
-
-                if (el.tagName === 'INPUT' && el.type === 'text') {
-                    el.placeholder = translation;
-                } else {
-                    el.innerHTML = translation;
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                en: {
+                    pageTitle: "Nonary Arithmetic - Base Converter",
+                    mainTitle: "Nonary Arithmetic",
+                    subTitle: "p→p±1 Algorithm and Power Mappings (Base 3, 9, 27)",
+                    configTitle: "Configuration",
+                    inputLabel: "Input Number",
+                    inputPlaceholder: "Enter a number",
+                    sourceBaseLabel: "Source Base",
+                    targetBaseLabel: "Target Base",
+                    useBalancedLabel: "Use balanced form",
+                    convertButton: "Convert",
+                    complexityTitle: "Complexity Analysis",
+                    quickResultTitle: "Quick Result",
+                    stepsTitle: "Conversion Steps",
+                    optimizedCasesTitle: "Optimized Special Cases",
+                    caseAdjacentTitle: "Adjacent Bases (p↔p±1)",
+                    caseAdjacentDesc: "O(n²) algorithm - Synthetic division",
+                    caseNonaryBridgeTitle: "Nonary Bridge (10↔3)",
+                    caseNonaryBridgeDesc: "O(n²) path (via O(n²) + O(d))",
+                    caseDoubleBridgeTitle: "Double Bridge (10↔2)",
+                    caseDoubleBridgeDesc: "O(n²) path (via bridges 9 and 3)",
+                    caseTernaryBridgeTitle: "Ternary Bridge (9↔2)",
+                    caseTernaryBridgeDesc: "O(n²) path (via O(d) + O(n²))",
+                    casePowersTitle: "Powers (9↔3, 27↔3)",
+                    casePowersDesc: "O(d) mapping (linear per digit). Base 27 (Heptavintimal) uses Jones alphabet.",
+                    caseBalancedTitle: "Balanced Representations",
+                    caseBalancedDesc: "O(d) conversion (linear per digit)",
+                    caseHeptaNonaryTitle: "Hepta-Nonary Bridge (27↔9)",
+                    caseHeptaNonaryDesc: "O(d) mapping (via O(d) + O(d))",
+                    caseHeptaDecimalTitle: "Hepta-Decimal Bridge (27↔10)",
+                    caseHeptaDecimalDesc: "O(n²) path",
+                    caseHeptaBinaryTitle: "Hepta-Binary Bridge (27↔2)",
+                    caseHeptaBinaryDesc: "O(n²) path",
+                    specialSystemsTitle: "Special Numeral Systems",
+                    balancedTernaryTitle: "Balanced Ternary (Base 3)",
+                    balancedTernaryExample: "Example: +0- = (+1)×3² + 0×3¹ + (-1)×3⁰ = 9 - 1 = 8₁₀",
+                    symmetricNonaryTitle: "Symmetric Nonary (Base 9)",
+                    symmetricNonaryDesc: "Direct mapping (2 balanced trits) to Balanced Base 3.",
+                    heptavintimalTitle: "Heptavintimal (Base 27)",
+                    heptavintimalAlphabet: "Jones Alphabet",
+                    heptavintimalDesc: "Efficient compression for 3 trits (3³ = 27). Avoids ambiguous letters (I, J, L, O, Q, S, U, W, Y).",
+                    balancedTernaryHelp: "Balanced Ternary: digits are -, 0, +",
+                    symmetricNonaryHelp: "Symmetric Nonary: digits are W, X, Y, Z, 0, 1, 2, 3, 4",
+                    heptavintimalHelp: "Heptavintimal: 0-9, A-Z (excluding I, J, L, O, Q, S, U, W, Y)",
+                    stepInput: "Input:",
+                    stepBase: "Base",
+                    stepBalanced: "balanced",
+                    stepResult: "Result:",
+                    stepOriginal: "Original",
+                    stepConverted: "Converted",
+                    stepBridgeStart: "{path} Bridge Conversion",
+                    stepStartPtoP: "Starting {from} → {to} conversion",
+                    stepStartMethod: "Method: {method} (using divisor {divisor})",
+                    stepIntermediate: "Intermediate step",
+                    stepBalancedFrom: "Balanced",
+                    stepBalancedTo: "Standard",
+                    stepBalancedConversion: "Balanced ↔ Standard Conversion ({from} → {to})",
+                    stepIntermediateResult: "Result in Base {base}",
+                    descIdentity: "Identity conversion (no change needed).",
+                    descPowerMapping2: "Power of 3 mapping (3 ↔ 3²).",
+                    descPowerMapping3: "Power of 3 mapping (3 ↔ 3³).",
+                    descPowerMappingCompound: "Compound power mapping (3² ↔ 3³).",
+                    descQuadraticP: "Synthetic division p→p±1.",
+                    descBridgeNonary: "Bridge via Nonary (Base 9).",
+                    descBridgeDouble: "Double bridge (10 ↔ 9 ↔ 3 ↔ 2).",
+                    descBridgeHeptaDecimal: "Bridge via Heptavintimal and Ternary (27 ↔ 3 ↔ 9 ↔ 10).",
+                    descBridgeHeptaBinary: "Bridge via Heptavintimal and Ternary (27 ↔ 3 ↔ 2).",
+                    descNotImplemented: "General algorithm (not fully optimized for this specific case).",
+                    effLinear: "Optimal (Linear)",
+                    effOptimal: "Optimal",
+                    effOptimalQuadratic: "Optimal for this distance",
+                    effNotImplemented: "Suboptimal",
+                    errorInvalidInput: "Invalid input. Valid characters: {chars}",
+                    errorIllegalDigit: "Illegal digit: {char}",
+                    errorNotOptimized: "No optimized path for {from} → {to}.",
+                    stepMappingDesc2: "Mapping 9→3 (each base-9 digit = 2 trits)",
+                    stepMappingDesc3: "Mapping 27→3 (each base-27 digit = 3 trits)",
+                    stepGroupingDesc2: "Grouping 3→9 (trit pairs → base-9 digit)",
+                    stepGroupingDesc3: "Grouping 3→27 (trit trios → base-27 digit)",
+                    licenseLink: "License",
+                    footerTagline: "Professional Arithmetic Tools for Base 3, 9, and 27.",
+                    faqTitle: "Frequently Asked Questions (FAQ)",
+                    q1: "How does Balanced Ternary conversion work?",
+                    a1: "The conversion uses an O(n) algorithm that adjusts each standard digit (0, 1, 2) to its balanced form (-1, 0, 1) by applying a carry whenever the value exceeds half of the base (1.5).",
+                    q2: "What is Heptavintimal (Base 27)?",
+                    a2: "Heptavintimal is a base-27 system. This tool uses the Jones alphabet (0-9, A-Z excluding I, J, L, O, Q, S, U, W, Y) to compactly represent triplets of ternary digits (trits) without visual ambiguity.",
+                    q3: "Why use the Nonary Bridge?",
+                    a3: "The Nonary Bridge (via Base 9) is the most efficient path for converting between decimal and ternary systems, leveraging the fact that 9 = 3² to allow fast linear mappings after an initial quadratic conversion."
+                },
+                pt: {
+                    pageTitle: "Aritmética Nonária - Conversor de Bases",
+                    mainTitle: "Aritmética Nonária",
+                    subTitle: "Algoritmo p→p±1 e Mapeamentos de Potência (Base 3, 9, 27)",
+                    configTitle: "Configuração",
+                    inputLabel: "Número de Entrada",
+                    inputPlaceholder: "Digite um número",
+                    sourceBaseLabel: "Base de Origem",
+                    targetBaseLabel: "Base de Destino",
+                    useBalancedLabel: "Usar forma balanceada",
+                    convertButton: "Converter",
+                    complexityTitle: "Análise de Complexidade",
+                    quickResultTitle: "Resultado Rápido",
+                    stepsTitle: "Passos da Conversão",
+                    optimizedCasesTitle: "Casos Especiais Otimizados",
+                    caseAdjacentTitle: "Bases Adjacentes (p↔p±1)",
+                    caseAdjacentDesc: "Algoritmo O(n²) - Divisão sintética",
+                    caseNonaryBridgeTitle: "Ponte Nonária (10↔3)",
+                    caseNonaryBridgeDesc: "Caminho O(n²) (via O(n²) + O(d))",
+                    caseDoubleBridgeTitle: "Ponte Dupla (10↔2)",
+                    caseDoubleBridgeDesc: "Caminho O(n²) (via pontes 9 e 3)",
+                    caseTernaryBridgeTitle: "Ponte Ternária (9↔2)",
+                    caseTernaryBridgeDesc: "Caminho O(n²) (via O(d) + O(n²))",
+                    casePowersTitle: "Potências (9↔3, 27↔3)",
+                    casePowersDesc: "Mapeamento O(d) (linear por dígito). Base 27 (Heptavintimal) usa alfabeto de Jones.",
+                    caseBalancedTitle: "Representações Balanceadas",
+                    caseBalancedDesc: "Conversão O(d) (linear por dígito)",
+                    caseHeptaNonaryTitle: "Ponte Hepta-Nonário (27↔9)",
+                    caseHeptaNonaryDesc: "Mapeamento O(d) (via O(d) + O(d))",
+                    caseHeptaDecimalTitle: "Ponte Hepta-Decimal (27↔10)",
+                    caseHeptaDecimalDesc: "Caminho O(n²)",
+                    caseHeptaBinaryTitle: "Ponte Hepta-Binário (27↔2)",
+                    caseHeptaBinaryDesc: "Caminho O(n²)",
+                    specialSystemsTitle: "Sistemas Numéricos Especiais",
+                    balancedTernaryTitle: "Ternário Balanceado (Base 3)",
+                    balancedTernaryExample: "Exemplo: +0- = (+1)×3² + 0×3¹ + (-1)×3⁰ = 9 - 1 = 8₁₀",
+                    symmetricNonaryTitle: "Nonário Simétrico (Base 9)",
+                    symmetricNonaryDesc: "Mapeamento direto (2 trits balanceados) para Base 3 Balanceada.",
+                    heptavintimalTitle: "Heptavintimal (Base 27)",
+                    heptavintimalAlphabet: "Alfabeto de Jones",
+                    heptavintimalDesc: "Compactação eficiente para 3 trits (3³ = 27). Evita letras ambíguas (I, J, L, O, Q, S, U, W, Y).",
+                    balancedTernaryHelp: "Ternário Balanceado: os dígitos são -, 0, +",
+                    symmetricNonaryHelp: "Nonário Simétrico: os dígitos são W, X, Y, Z, 0, 1, 2, 3, 4",
+                    heptavintimalHelp: "Heptavintimal (Jones): 0-9, A-Z (exceto I, J, L, O, Q, S, U, W, Y)",
+                    stepInput: "Entrada:",
+                    stepBase: "Base",
+                    stepBalanced: "balanceada",
+                    stepResult: "Resultado:",
+                    stepOriginal: "Original",
+                    stepConverted: "Convertido",
+                    stepBridgeStart: "Conversão via Ponte {path}",
+                    stepStartPtoP: "Iniciando conversão {from} → {to}",
+                    stepStartMethod: "Método: {method} (usando divisor {divisor})",
+                    stepIntermediate: "Passo intermediário",
+                    stepBalancedFrom: "Balanceado",
+                    stepBalancedTo: "Padrão",
+                    stepBalancedConversion: "Conversão Balanceado ↔ Padrão ({from} → {to})",
+                    stepIntermediateResult: "Resultado na Base {base}",
+                    descIdentity: "Conversão de identidade (não há alteração).",
+                    descPowerMapping2: "Mapeamento de potência de 3 (3 ↔ 3²).",
+                    descPowerMapping3: "Mapeamento de potência de 3 (3 ↔ 3³).",
+                    descPowerMappingCompound: "Mapeamento de potência composto (3² ↔ 3³).",
+                    descQuadraticP: "Divisão sintética p→p±1.",
+                    descBridgeNonary: "Ponte via Nonária (Base 9).",
+                    descBridgeDouble: "Ponte dupla (10 ↔ 9 ↔ 3 ↔ 2).",
+                    descBridgeHeptaDecimal: "Ponte via Heptavintimal e Ternária (27 ↔ 3 ↔ 9 ↔ 10).",
+                    descBridgeHeptaBinary: "Ponte via Heptavintimal e Ternária (27 ↔ 3 ↔ 2).",
+                    descNotImplemented: "Algoritmo geral (não otimizado para este caso específico).",
+                    effLinear: "Otimal (Linear)",
+                    effOptimal: "Otimal",
+                    effOptimalQuadratic: "Otimal para esta distância",
+                    effNotImplemented: "Sub-otimal",
+                    errorInvalidInput: "Entrada inválida. Caracteres válidos: {chars}",
+                    errorIllegalDigit: "Dígito ilegal: {char}",
+                    errorNotOptimized: "Caminho não otimizado para {from} → {to}.",
+                    stepMappingDesc2: "Mapeamento 9→3 (cada dígito base-9 = 2 trits)",
+                    stepMappingDesc3: "Mapeamento 27→3 (cada dígito base-27 = 3 trits)",
+                    stepGroupingDesc2: "Agrupamento 3→9 (pares de trits → dígito base-9)",
+                    stepGroupingDesc3: "Agrupamento 3→27 (trios de trits → dígito base-27)",
+                    licenseLink: "Licença",
+                    footerTagline: "Ferramentas Profissionais de Aritmética para Base 3, 9 e 27.",
+                    faqTitle: "Perguntas Frequentes (FAQ)",
+                    q1: "Como funciona a conversão para Ternário Balanceado?",
+                    a1: "A conversão utiliza um algoritmo de complexidade O(n) que ajusta cada dígito standard (0, 1, 2) para a forma balanceada (-1, 0, 1), aplicando um transporte ('carry') sempre que o valor excede a metade da base (1.5).",
+                    q2: "O que é Heptavintimal (Base 27)?",
+                    a2: "Heptavintimal é um sistema de base 27. Este software utiliza o alfabeto de Jones (0-9, A-Z excluindo I, J, L, O, Q, S, U, W, Y) para representar trios de dígitos ternários (trits) de forma compacta e sem ambiguidades visuais.",
+                    q3: "Como funciona a Ponte Nonária?",
+                    a3: "A Ponte Nonária (via Base 9) é o caminho mais eficiente para converter entre sistemas decimais e ternários, aproveitando que 9 = 3², permitindo mapeamentos lineares rápidos após uma única conversão quadrática inicial."
                 }
-            });
+            };
 
-            // Update dynamic UI components
-            updateBalancedUI(); // Update help texts
-            renderAll(); // Re-render steps and complexity in the new language
-            lucide.createIcons(); // Re-create icons if they were part of innerHTML
-        };
+            const HEPT_DIGITS = "0123456789ABCDEFGHKMNPRTVXZ";
+            const balancedDigits = {
+                3: { toStandard: { '-': -1, '0': 0, '+': 1 }, fromStandard: { '-1': '-', '0': '0', '1': '+' } },
+                9: {
+                    toStandard: { 'W': -4, 'X': -3, 'Y': -2, 'Z': -1, '0': 0, '1': 1, '2': 2, '3': 3, '4': 4 },
+                    fromStandard: { '-4': 'W', '-3': 'X', '-2': 'Y', '-1': 'Z', '0': '0', '1': '1', '2': '2', '3': '3', '4': '4' }
+                }
+            };
 
-        // Gets the initial language from URL or defaults to 'en'
-        const getInitialLang = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const lang = urlParams.get('lang');
-            return (lang === 'pt') ? 'pt' : 'en'; // Default to 'en'
-        };
+            let state = {
+                inputValue: '1234',
+                sourceBase: 10,
+                targetBase: 3,
+                sourceBalanced: false,
+                targetBalanced: false,
+                conversionSteps: [],
+                complexity: null,
+                currentLang: 'en'
+            };
 
-        // --- UTILS FOR BASE 27 ---
+            const dom = {
+                langSelector: document.getElementById('langSelector'),
+                inputValue: document.getElementById('inputValue'),
+                sourceBase: document.getElementById('sourceBase'),
+                targetBase: document.getElementById('targetBase'),
+                sourceBalanced: document.getElementById('sourceBalanced'),
+                targetBalanced: document.getElementById('targetBalanced'),
+                sourceBalancedWrapper: document.getElementById('sourceBalancedWrapper'),
+                targetBalancedWrapper: document.getElementById('targetBalancedWrapper'),
+                sourceBalancedHelp: document.getElementById('sourceBalancedHelp'),
+                heptavintimalHelp: document.getElementById('heptavintimalHelp'),
+                convertButton: document.getElementById('convertButton'),
+                complexityBox: document.getElementById('complexityBox'),
+                quickResultBox: document.getElementById('quickResultBox'),
+                stepsContainer: document.getElementById('stepsContainer'),
+                stepsContainerWrapper: document.getElementById('stepsContainerWrapper')
+            };
 
-        const getDigitValue = (char, base) => {
-            const c = char.toUpperCase();
-            if (base === 27) {
-                return HEPT_DIGITS.indexOf(c);
-            }
-            if (c >= '0' && c <= '9') return parseInt(c);
-            return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
-        };
+            const i18n = (key, args = {}) => {
+                let text = translations[state.currentLang][key] || key;
+                Object.keys(args).forEach(arg => text = text.replace(`{${arg}}`, args[arg]));
+                return text;
+            };
 
-        const getDigitChar = (val, base) => {
-            if (base === 27) {
-                return HEPT_DIGITS[val];
-            }
-            if (val < 10) return val.toString();
-            return String.fromCharCode('A'.charCodeAt(0) + val - 10);
-        };
-
-        const formatBaseOutput = (arr, base) => {
-            return arr.map(d => getDigitChar(d, base)).join('');
-        };
-
-        // --- HELPER FUNCTIONS ---
-
-        const convertBalancedTernaryToNonary = (value) => {
-            const steps = [];
-            steps.push({
-                type: 'balanced_conversion',
-                descriptionKey: 'stepBalancedConversion',
-                args: { from: 'Ternário Balanceado', to: 'Nonário Simétrico' }
-            });
-            const trits = value.split('');
-            if (trits.length % 2 !== 0) trits.unshift('0');
-            const nonaryDigits = [];
-            const mappingDetails = [];
-            for (let i = 0; i < trits.length; i += 2) {
-                const pair = trits[i] + trits[i + 1];
-                const nonaryDigit = ternaryToNonaryMap[pair];
-                nonaryDigits.push(nonaryDigit);
-                const highTrit = balancedDigits[3].toStandard[trits[i]];
-                const lowTrit = balancedDigits[3].toStandard[trits[i + 1]];
-                mappingDetails.push({
-                    ternaryPair: pair,
-                    nonaryDigit: nonaryDigit,
-                    value: highTrit * 3 + lowTrit
+            const setLang = (lang) => {
+                state.currentLang = lang;
+                document.documentElement.setAttribute('lang', lang);
+                document.querySelectorAll('[data-i18n-key]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-key');
+                    if (el.tagName === 'INPUT') el.placeholder = i18n(key);
+                    else el.textContent = i18n(key);
                 });
-            }
-            steps.push({
-                type: 'direct_mapping',
-                descriptionKey: 'stepMappingDesc2',
-                mappings: mappingDetails,
-                result: nonaryDigits.join('')
-            });
-            return { value: nonaryDigits.join(''), steps };
-        };
-
-        const convertBalancedNonaryToTernary = (value) => {
-            const steps = [];
-            steps.push({
-                type: 'balanced_conversion',
-                descriptionKey: 'stepBalancedConversion',
-                args: { from: 'Nonário Simétrico', to: 'Ternário Balanceado' }
-            });
-            const nonaryDigits = value.split('');
-            const ternaryPairs = [];
-            const mappingDetails = [];
-            nonaryDigits.forEach(digit => {
-                const pair = nonaryToTernaryMap[digit];
-                ternaryPairs.push(pair);
-                mappingDetails.push({
-                    nonaryDigit: digit,
-                    ternaryPair: pair,
-                    value: balancedDigits[9].toStandard[digit]
-                });
-            });
-            const result = ternaryPairs.join('');
-            steps.push({
-                type: 'direct_mapping',
-                descriptionKey: 'stepMappingDesc2', // Re-using same key
-                mappings: mappingDetails,
-                result: result
-            });
-            return { value: result, steps };
-        };
-
-        const balancedToStandard = (value, base) => {
-            const steps = [];
-            steps.push({
-                type: 'balanced_conversion',
-                descriptionKey: 'stepBalancedConversion',
-                args: { from: i18n('stepBalancedFrom'), to: i18n('stepBalancedTo') }
-            });
-
-            if (base === 3) {
-                const digits = value.split('').map(d => balancedDigits[3].toStandard[d]);
-                let carry = 0;
-                const result = [];
-                for (let i = digits.length - 1; i >= 0; i--) {
-                    let val = digits[i] + carry;
-                    if (val < 0) { result.unshift(val + 3); carry = -1; }
-                    else { result.unshift(val); carry = 0; }
-                }
-                if (carry < 0) result.unshift(2);
-                steps.push({
-                    type: 'balanced_detail', original: value, converted: result.join(''),
-                    mapping: value.split('').map((d, i) => ({ balanced: d, value: digits[i] }))
-                });
-                return { value: result.join(''), steps };
-            } else if (base === 9) {
-                const digits = value.split('').map(d => balancedDigits[9].toStandard[d]);
-                let carry = 0;
-                const result = [];
-                for (let i = digits.length - 1; i >= 0; i--) {
-                    let val = digits[i] + carry;
-                    if (val < 0) { result.unshift(val + 9); carry = -1; }
-                    else { result.unshift(val); carry = 0; }
-                }
-                if (carry < 0) result.unshift(8);
-                steps.push({
-                    type: 'balanced_detail', original: value, converted: result.join(''),
-                    mapping: value.split('').map((d, i) => ({ balanced: d, value: digits[i] }))
-                });
-                return { value: result.join(''), steps };
-            }
-            return { value, steps };
-        };
-
-        const standardToBalanced = (value, base) => {
-            const steps = [];
-            steps.push({
-                type: 'balanced_conversion',
-                descriptionKey: 'stepBalancedConversion',
-                args: { from: i18n('stepBalancedTo'), to: i18n('stepStandardTo') }
-            });
-
-            if (base === 3) {
-                const digits = value.split('').map(Number);
-                const result = [];
-                let carry = 0;
-                for (let i = digits.length - 1; i >= 0; i--) {
-                    let val = digits[i] + carry;
-                    if (val === 2) { result.unshift('-'); carry = 1; }
-                    else if (val === 3) { result.unshift('0'); carry = 1; }
-                    else if (val === 1) { result.unshift('+'); carry = 0; }
-                    else { result.unshift('0'); carry = 0; }
-                }
-                if (carry > 0) result.unshift('+');
-                steps.push({
-                    type: 'balanced_detail', original: value, converted: result.join(''),
-                    mapping: result.map((d, i) => ({ standard: digits[i], balanced: d }))
-                });
-                return { value: result.join(''), steps };
-            } else if (base === 9) {
-                const digits = value.split('').map(Number);
-                const result = [];
-                let carry = 0;
-                for (let i = digits.length - 1; i >= 0; i--) {
-                    let val = digits[i] + carry;
-                    if (val > 4) {
-                        const balanced = val - 9;
-                        result.unshift(balancedDigits[9].fromStandard[balanced.toString()]);
-                        carry = 1;
-                    } else {
-                        result.unshift(balancedDigits[9].fromStandard[val.toString()]);
-                        carry = 0;
-                    }
-                }
-                if (carry > 0) result.unshift('1');
-                steps.push({
-                    type: 'balanced_detail', original: value, converted: result.join(''),
-                    mapping: result.map((d, i) => ({ standard: digits[i], balanced: d }))
-                });
-                return { value: result.join(''), steps };
-            }
-            return { value, steps };
-        };
-
-        const convertAdjacentBases = (digits, fromBase, toBase) => {
-            const allSteps = [];
-            const result_digits = [];
-            let current_digits = [...digits];
-            const isDecrement = toBase < fromBase;
-            const divisor = isDecrement ? fromBase - 1 : fromBase + 1;
-
-            allSteps.push({
-                type: 'start',
-                descriptionKey: 'stepStartPtoP',
-                methodKey: 'stepStartMethod',
-                args: {
-                    from: fromBase,
-                    to: toBase,
-                    method: isDecrement ? 'p→p-1' : 'p→p+1',
-                    divisor: divisor
-                }
-            });
-
-            let pass = 0;
-            while (current_digits.length > 0 && (current_digits.length > 1 || current_digits[0] !== 0)) {
-                const n = current_digits.length - 1;
-                const a = [...current_digits].reverse();
-                const b = [];
-                const c = [];
-                c[n + 1] = 0;
-                const passSteps = [];
-
-                for (let i = n; i >= 0; i--) {
-                    const ai = a[i];
-                    let q, r, formulaMsg;
-                    if (isDecrement) {
-                        const sum = ai + c[i + 1];
-                        q = Math.floor(sum / divisor);
-                        r = sum % divisor;
-                        b[i] = c[i + 1] + q;
-                        c[i] = r;
-                        formulaMsg = `Pass ${pass}: i=${i}, a=${ai}, c_in=${c[i+1]} | sum=${sum} | q=${q}, r=${r} | b=${b[i]}, c_out=${c[i]}`;
-                    } else {
-                        const diff = ai - c[i + 1];
-                        q = Math.floor(diff / divisor);
-                        r = diff - (q * divisor);
-                        b[i] = c[i + 1] + q;
-                        c[i] = r;
-                        formulaMsg = `Pass ${pass}: i=${i}, a=${ai}, c_in=${c[i+1]} | diff=${diff} | q=${q}, r=${r} | b=${b[i]}, c_out=${c[i]}`;
-                    }
-                    passSteps.push({
-                        type: 'iteration', index: i, digit: ai, carry: c[i + 1], formula: formulaMsg
-                    });
-                }
-
-                const remainder = c[0];
-                result_digits.unshift(remainder);
-                b.reverse();
-                while (b.length > 1 && b[0] === 0) b.shift();
-                if (b.length === 0) b.push(0);
-                current_digits = b;
-                allSteps.push(...passSteps);
-
-                allSteps.push({
-                    type: 'intermediate',
-                    descriptionKey: 'stepIntermediate',
-                    args: {
-                        remainder: remainder,
-                        char: getDigitChar(remainder, toBase),
-                        quotient: current_digits.join(',')
-                    },
-                    value: formatBaseOutput(current_digits, fromBase)
-                });
-                pass++;
-            }
-            if (result_digits.length === 0) result_digits.push(0);
-            return { result: result_digits, steps: allSteps };
-        };
-
-        const convertViaNonary = (digits, fromBase, toBase) => {
-            const allSteps = [];
-            if (fromBase === 10 && toBase === 3) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 10, to: 3, path: 'nonária' } });
-                const step1 = convertAdjacentBases(digits, 10, 9);
-                allSteps.push(...step1.steps);
-                allSteps.push({ type: 'intermediate', descriptionKey: 'stepIntermediateResult', args: { base: 9 }, value: formatBaseOutput(step1.result, 9) });
-
-                const ternaryPairs = [];
-                step1.result.forEach(digit => {
-                    ternaryPairs.push(Math.floor(digit / 3), digit % 3);
-                });
-                while (ternaryPairs.length > 1 && ternaryPairs[0] === 0) ternaryPairs.shift();
-
-                allSteps.push({ type: 'mapping', descriptionKey: 'stepMappingDesc2', mapping: step1.result.map(d => ({ nonary: d, ternary: `${Math.floor(d/3)}${d%3}` })) });
-                return { result: ternaryPairs, steps: allSteps };
-            }
-            if (fromBase === 3 && toBase === 10) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 3, to: 10, path: 'nonária' } });
-                const digits3 = [...digits];
-                if (digits3.length % 2 !== 0) digits3.unshift(0);
-                const nonaryDigits = [];
-                for (let i = 0; i < digits3.length; i += 2) nonaryDigits.push(digits3[i] * 3 + digits3[i+1]);
-
-                allSteps.push({ type: 'grouping', descriptionKey: 'stepGroupingDesc2', groups: nonaryDigits.map((d,i) => ({from: `${digits3[i*2]}${digits3[i*2+1]}`, to: d})) });
-                allSteps.push({ type: 'intermediate', descriptionKey: 'stepIntermediateResult', args: { base: 9 }, value: formatBaseOutput(nonaryDigits, 9) });
-                const step2 = convertAdjacentBases(nonaryDigits, 9, 10);
-                allSteps.push(...step2.steps);
-                return { result: step2.result, steps: allSteps };
-            }
-            return { result: [0], steps: [{type: 'error', messageKey: 'errorNotOptimized', args: { from: fromBase, to: toBase }}] };
-        };
-
-        const convertViaPowerMapping = (digits, fromBase, toBase) => {
-            const allSteps = [];
-            if (fromBase === 27 && toBase === 3) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 27, to: 3, path: 'Heptavintimal' } });
-                const ternaryDigits = [];
-                const mapping = [];
-                digits.forEach(d => {
-                    const t2 = Math.floor(d / 9); const rem = d % 9;
-                    const t1 = Math.floor(rem / 3); const t0 = rem % 3;
-                    ternaryDigits.push(t2, t1, t0);
-                    mapping.push({ from: getDigitChar(d, 27), to: `${t2}${t1}${t0}` });
-                });
-                while (ternaryDigits.length > 1 && ternaryDigits[0] === 0) ternaryDigits.shift();
-                allSteps.push({ type: 'mapping', descriptionKey: 'stepMappingDesc3', mapping: mapping.map(m => ({ nonary: m.from, ternary: m.to })) });
-                return { result: ternaryDigits, steps: allSteps };
-            }
-            if (fromBase === 3 && toBase === 27) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 3, to: 27, path: 'Heptavintimal' } });
-                const digits3 = [...digits];
-                while (digits3.length % 3 !== 0) digits3.unshift(0);
-                const heptDigits = [];
-                const groups = [];
-                for (let i = 0; i < digits3.length; i += 3) {
-                    const val = digits3[i]*9 + digits3[i+1]*3 + digits3[i+2];
-                    heptDigits.push(val);
-                    groups.push({ from: `${digits3[i]}${digits3[i+1]}${digits3[i+2]}`, to: getDigitChar(val, 27) });
-                }
-                allSteps.push({ type: 'grouping', descriptionKey: 'stepGroupingDesc3', groups: groups });
-                return { result: heptDigits, steps: allSteps };
-            }
-            return { result: [0], steps: [] };
-        };
-
-        const convertViaDoubleBridge = (digits, fromBase, toBase) => {
-            const allSteps = [];
-            if (fromBase === 10 && toBase === 2) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 10, to: 2, path: 'dupla' } });
-                const step1 = convertAdjacentBases(digits, 10, 9);
-                allSteps.push(...step1.steps);
-                allSteps.push({ type: 'intermediate', descriptionKey: 'stepIntermediateResult', args: { base: 9 }, value: formatBaseOutput(step1.result, 9) });
-                const tDigits = [];
-                step1.result.forEach(d => tDigits.push(Math.floor(d/3), d%3));
-                while(tDigits.length>1 && tDigits[0]===0) tDigits.shift();
-                allSteps.push({ type: 'mapping', descriptionKey: 'stepMappingDesc2', mapping: step1.result.map(d => ({nonary: d, ternary: `${Math.floor(d/3)}${d%3}`}))});
-                const step3 = convertAdjacentBases(tDigits, 3, 2);
-                allSteps.push(...step3.steps);
-                return { result: step3.result, steps: allSteps };
-            }
-            if (fromBase === 2 && toBase === 10) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 2, to: 10, path: 'dupla' } });
-                const step1 = convertAdjacentBases(digits, 2, 3);
-                allSteps.push(...step1.steps);
-                const d3 = [...step1.result];
-                if (d3.length%2!==0) d3.unshift(0);
-                const nDigits = [];
-                for(let i=0; i<d3.length; i+=2) nDigits.push(d3[i]*3 + d3[i+1]);
-                allSteps.push({ type: 'grouping', descriptionKey: 'stepGroupingDesc2', groups: nDigits.map((d,i)=>({from: `${d3[i*2]}${d3[i*2+1]}`, to: d})) });
-                const step3 = convertAdjacentBases(nDigits, 9, 10);
-                allSteps.push(...step3.steps);
-                return { result: step3.result, steps: allSteps };
-            }
-            return { result: [0], steps: [{type: 'error', messageKey: 'errorNotOptimized', args: { from: fromBase, to: toBase }}] };
-        };
-
-        const convertViaTernaryBridge = (digits, fromBase, toBase) => {
-            const allSteps = [];
-            if (fromBase === 9 && toBase === 2) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 9, to: 2, path: 'ternária' } });
-                const tDigits = [];
-                digits.forEach(d => tDigits.push(Math.floor(d/3), d%3));
-                while(tDigits.length>1 && tDigits[0]===0) tDigits.shift();
-                allSteps.push({ type: 'mapping', descriptionKey: 'stepMappingDesc2', mapping: digits.map(d => ({nonary: d, ternary: `${Math.floor(d/3)}${d%3}`}))});
-                const step2 = convertAdjacentBases(tDigits, 3, 2);
-                allSteps.push(...step2.steps);
-                return { result: step2.result, steps: allSteps };
-            }
-            if (fromBase === 2 && toBase === 9) {
-                allSteps.push({ type: 'bridge_start', descriptionKey: 'stepBridgeStart', args: { from: 2, to: 9, path: 'ternária' } });
-                const step1 = convertAdjacentBases(digits, 2, 3);
-                allSteps.push(...step1.steps);
-                const d3 = [...step1.result];
-                if(d3.length%2!==0) d3.unshift(0);
-                const nDigits = [];
-                for(let i=0; i<d3.length; i+=2) nDigits.push(d3[i]*3 + d3[i+1]);
-                allSteps.push({ type: 'grouping', descriptionKey: 'stepGroupingDesc2', groups: nDigits.map((d,i)=>({from: `${d3[i*2]}${d3[i*2+1]}`, to: d})) });
-                return { result: nDigits, steps: allSteps };
-            }
-            return { result: [0], steps: []};
-        };
-
-        // --- ANALYSIS & VALIDATION (NOW RETURN KEYS) ---
-
-        const analyzeComplexity = (from, to) => {
-            const diff = Math.abs(to - from);
-            if (from === to) return { time: 'O(d)', space: 'O(d)', descriptionKey: 'descIdentity', efficiencyKey: 'effLinear' };
-            if ((from===3 && to===9) || (from===9 && to===3)) return { time: 'O(d)', space: 'O(d)', descriptionKey: 'descPowerMapping2', efficiencyKey: 'effOptimal' };
-            if ((from===3 && to===27) || (from===27 && to===3)) return { time: 'O(d)', space: 'O(d)', descriptionKey: 'descPowerMapping3', efficiencyKey: 'effOptimal' };
-            if ((from===9 && to===27) || (from===27 && to===9)) return { time: 'O(d)', space: 'O(d)', descriptionKey: 'descPowerMappingCompound', efficiencyKey: 'effOptimal' };
-            if (diff === 1) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descQuadraticP', efficiencyKey: 'effOptimalQuadratic' };
-            if ((from===10 && to===3) || (from===3 && to===10)) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descBridgeNonary', efficiencyKey: 'effOptimal' };
-            if ((from===10 && to===2) || (from===2 && to===10)) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descBridgeDouble', efficiencyKey: 'effOptimal' };
-            if ((from===27 && to===10) || (from===10 && to===27)) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descBridgeHeptaDecimal', efficiencyKey: 'effOptimal' };
-            if ((from === 27 && to === 2) || (from === 2 && to === 27)) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descBridgeHeptaBinary', efficiencyKey: 'effOptimal' };
-            return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descNotImplemented', efficiencyKey: 'effNotImplemented' };
-        };
-
-        const validateInput = (value, base, isBalanced) => {
-            if (!value) return false;
-            if (isBalanced) {
-                if (base === 3) return /^[+\-0]+$/.test(value);
-                if (base === 9) return /^[WXYZ01234]+$/.test(value);
-            }
-            if (base === 27) return new RegExp(`^[${HEPT_DIGITS}]+$`, 'i').test(value);
-            const validDigits = '0123456789ABCDEF'.slice(0, base);
-            return new RegExp(`^[${validDigits}]+$`, 'i').test(value);
-        };
-
-        // --- MAIN CONVERSION FUNCTION (NOW USES I18N KEYS) ---
-        const performConversion = () => {
-            try {
-                const sB = state.sourceBase, tB = state.targetBase;
-                const sBal = state.sourceBalanced, tBal = state.targetBalanced;
-
-                const getValidChars = () => {
-                    if (sBal) {
-                        return sB === 3 ? '{-, 0, +}' : '{W, X, Y, Z, 0, 1, 2, 3, 4}';
-                    }
-                    return sB === 27 ? `Alfabeto Jones: ${HEPT_DIGITS}` : (sB <= 10 ? `{0-${sB-1}}` : `{0-9, A-${getDigitChar(sB-1, sB)}}`);
-                };
-
-                if (sB === tB && sBal === tBal) {
-                    if (!validateInput(state.inputValue, sB, sBal)) {
-                        state.conversionSteps = [{ type: 'error', messageKey: 'errorInvalidInput', args: { chars: getValidChars() } }];
-                        renderAll(); return;
-                    }
-                    state.complexity = analyzeComplexity(sB, tB);
-                    state.conversionSteps = [{ type: 'result', value: state.inputValue, base: tB, balanced: tBal }];
-                    renderAll(); return;
-                }
-
-                let processedInput = state.inputValue;
-                const allSteps = [];
-
-                if (!validateInput(state.inputValue, sB, sBal)) {
-                    state.conversionSteps = [{ type: 'error', messageKey: 'errorInvalidInput', args: { chars: getValidChars() } }];
-                    renderAll(); return;
-                }
-
-                if (sBal && (sB===3 || sB===9)) {
-                    const balConv = balancedToStandard(state.inputValue, sB);
-                    allSteps.push(...balConv.steps);
-                    processedInput = balConv.value;
-                }
-
-                const digits = [];
-                processedInput = processedInput.toUpperCase();
-                if (processedInput.length > 1 && sB !== 27) {
-                    processedInput = processedInput.replace(/^0+(?=\d|[A-Z])/, '');
-                }
-                if (processedInput === '') processedInput = '0';
-
-                for(let char of processedInput) {
-                    const val = getDigitValue(char, sB);
-                    if(isNaN(val) || val === -1 || val >= sB) {
-                        throw new Error(i18n('errorIllegalDigit', { char: char }));
-                    }
-                    digits.push(val);
-                }
-
-                state.complexity = analyzeComplexity(sB, tB);
-
-                let conversion;
-                const diff = Math.abs(tB - sB);
-
-                if (diff === 1) {
-                    conversion = convertAdjacentBases(digits, sB, tB);
-                } else if ((sB===10 && tB===3) || (sB===3 && tB===10)) {
-                    conversion = convertViaNonary(digits, sB, tB);
-                } else if ((sB===10 && tB===2) || (sB===2 && tB===10)) {
-                    conversion = convertViaDoubleBridge(digits, sB, tB);
-                } else if ((sB===9 && tB===2) || (sB===2 && tB===9)) {
-                    conversion = convertViaTernaryBridge(digits, sB, tB);
-                }
-                else if ((sB===27 && tB===3) || (sB===3 && tB===27)) {
-                    conversion = convertViaPowerMapping(digits, sB, tB);
-                }
-                else if ((sB===27 && tB===9) || (sB===9 && tB===27)) {
-                    if(sB===27) {
-                        const step1 = convertViaPowerMapping(digits, 27, 3);
-                        allSteps.push(...step1.steps);
-                        const digits3 = step1.result;
-                        if(digits3.length%2!==0) digits3.unshift(0);
-                        const digits9 = []; const groups = [];
-                        for(let i=0; i<digits3.length; i+=2) {
-                            const val = digits3[i]*3 + digits3[i+1];
-                            digits9.push(val);
-                            groups.push({from:`${digits3[i]}${digits3[i+1]}`, to:val});
-                        }
-                        allSteps.push({type:'grouping', descriptionKey:'stepGroupingDesc2', groups: groups.map(g=>({from:g.from, to:g.to}))});
-                        conversion = { result: digits9, steps: [] };
-                    } else {
-                        const digits3 = [];
-                        digits.forEach(d => digits3.push(Math.floor(d/3), d%3));
-                        allSteps.push({type:'mapping', descriptionKey:'stepMappingDesc2', mapping: digits.map(d=>({nonary:d, ternary:`${Math.floor(d/3)}${d%3}`}))});
-                        const step2 = convertViaPowerMapping(digits3, 3, 27);
-                        conversion = { result: step2.result, steps: step2.steps };
-                    }
-                }
-                else if ((sB===27 && tB===10)) {
-                    const step1 = convertViaPowerMapping(digits, 27, 3);
-                    allSteps.push(...step1.steps);
-                    const step2 = convertViaNonary(step1.result, 3, 10);
-                    allSteps.push(...step2.steps);
-                    conversion = { result: step2.result, steps: [] };
-                }
-                else if ((sB===10 && tB===27)) {
-                    const step1 = convertViaNonary(digits, 10, 3);
-                    allSteps.push(...step1.steps);
-                    const step2 = convertViaPowerMapping(step1.result, 3, 27);
-                    allSteps.push(...step2.steps);
-                    conversion = { result: step2.result, steps: [] };
-                }
-                else if ((sB === 27 && tB === 2)) {
-                    const step1 = convertViaPowerMapping(digits, 27, 3);
-                    allSteps.push(...step1.steps);
-                    const step2 = convertAdjacentBases(step1.result, 3, 2);
-                    allSteps.push(...step2.steps);
-                    conversion = { result: step2.result, steps: [] };
-                }
-                else if ((sB === 2 && tB === 27)) {
-                    const step1 = convertAdjacentBases(digits, 2, 3);
-                    allSteps.push(...step1.steps);
-                    const step2 = convertViaPowerMapping(step1.result, 3, 27);
-                    allSteps.push(...step2.steps);
-                    conversion = { result: step2.result, steps: [] };
-                }
-                else {
-                    allSteps.push({ type: 'error', messageKey: 'errorNotOptimized', args: { from: sB, to: tB } });
-                    state.conversionSteps = allSteps;
-                    renderAll(); return;
-                }
-
-                if(conversion) allSteps.push(...conversion.steps);
-
-                let finalResultStr = formatBaseOutput(conversion.result, tB);
-
-                if (tBal && (tB===3 || tB===9)) {
-                    const balConv = standardToBalanced(finalResultStr, tB);
-                    allSteps.push(...balConv.steps);
-                    finalResultStr = balConv.value;
-                }
-
-                allSteps.push({ type: 'result', value: finalResultStr, base: tB, balanced: tBal });
-                state.conversionSteps = allSteps;
                 renderAll();
+            };
 
-            } catch (e) {
-                state.conversionSteps = [{ type: 'error', message: e.message }]; // Keep raw error for unexpected JS exceptions
-                renderAll(); // Use renderAll to show complexity box too
-            }
-        };
+            const getDigitValue = (char, base) => {
+                const c = char.toUpperCase();
+                if (base === 27) return HEPT_DIGITS.indexOf(c);
+                if (c >= '0' && c <= '9') return parseInt(c);
+                return c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+            };
 
-        // --- UI UPDATES (NOW USES I18N) ---
-        const updateBalancedUI = () => {
-            // Source Base
-            dom.sourceBalancedWrapper.classList.toggle('hidden', state.sourceBase !== 3 && state.sourceBase !== 9);
-            // Target Base
-            dom.targetBalancedWrapper.classList.toggle('hidden', state.targetBase !== 3 && state.targetBase !== 9);
+            const getDigitChar = (val, base) => {
+                if (base === 27) return HEPT_DIGITS[val];
+                if (val < 10) return val.toString();
+                return String.fromCharCode('A'.charCodeAt(0) + val - 10);
+            };
 
-            // Source Help Text
-            let helpKey = null;
-            if (state.sourceBalanced) {
-                if (state.sourceBase === 3) helpKey = 'balancedTernaryHelp';
-                else if (state.sourceBase === 9) helpKey = 'symmetricNonaryHelp';
-            }
+            const formatBaseOutput = (arr, base) => arr.map(d => getDigitChar(d, base)).join('');
 
-            dom.sourceBalancedHelp.textContent = helpKey ? i18n(helpKey) : '';
-            dom.sourceBalancedHelp.classList.toggle('hidden', !helpKey);
-
-            dom.heptavintimalHelp.classList.toggle('hidden', state.sourceBase !== 27);
-        };
-
-        // RENDER FUNCTIONS (NOW USE I18N)
-        const renderComplexity = () => {
-            if (!state.complexity) {
-                dom.complexityBox.classList.add('hidden');
-                return;
-            }
-
-            // Get translated strings
-            const description = i18n(state.complexity.descriptionKey);
-            const efficiency = i18n(state.complexity.efficiencyKey);
-
-            const { time, space } = state.complexity;
-            const efficiencyClass = (efficiency.includes(i18n('effOptimal')) || efficiency.includes(i18n('effLinear')))
-                ? 'bg-green-500/20 text-green-400 border border-green-500/30'
-                : 'bg-red-500/20 text-red-400 border border-red-500/30';
-
-            dom.complexityBox.innerHTML = `
-                    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <i data-lucide="info" class="w-5 h-5 text-cyan-400"></i>
-                        ${i18n('complexityTitle')}
-                    </h2>
-                    <div class="space-y-3">
-                        <div class="flex items-center gap-3">
-                            <span class="text-slate-400">Time:</span>
-                            <code class="bg-slate-900 px-3 py-1 rounded text-blue-400 font-mono">${time}</code>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-slate-400">Space:</span>
-                            <code class="bg-slate-900 px-3 py-1 rounded text-cyan-400 font-mono">${space}</code>
-                        </div>
-                        <div class="mt-4 p-4 bg-slate-900/50 rounded-lg border border-slate-700">
-                            <div class="text-sm text-slate-300 mb-2">${description}</div>
-                            <div class="inline-block px-3 py-1 rounded-full text-sm font-semibold ${efficiencyClass}">${efficiency}</div>
-                        </div>
-                    </div>`;
-            dom.complexityBox.classList.remove('hidden');
-        };
-
-        const renderQuickResult = () => {
-            const resultStep = state.conversionSteps.find(step => step.type === 'result');
-            if (!resultStep) {
-                dom.quickResultBox.classList.add('hidden');
-                return;
-            }
-            const balancedText = resultStep.balanced ? ` (${i18n('stepBalanced')})` : '';
-            dom.quickResultBox.innerHTML = `
-                    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>
-                        ${i18n('quickResultTitle')}
-                    </h2>
-                    <div class="flex flex-col gap-2">
-                         <div class="flex items-center gap-3 bg-green-500/10 border border-green-500/30 rounded-lg p-4">
-                            <code class="text-green-300 font-mono text-2xl break-all">${resultStep.value}</code>
-                        </div>
-                        <div class="text-slate-400 text-sm text-right">
-                            ${i18n('stepBase')} ${resultStep.base}${balancedText}
-                        </div>
-                    </div>`;
-            dom.quickResultBox.classList.remove('hidden');
-        };
-
-        const renderSteps = () => {
-            if (state.conversionSteps.length === 0) {
-                dom.stepsContainerWrapper.classList.add('hidden');
-                return;
-            }
-            let html = '';
-            state.conversionSteps.forEach(step => {
-                html += '<div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700">';
-                const balancedText = step.balanced ? ` (${i18n('stepBalanced')})` : '';
-
-                switch (step.type) {
-                    case 'input':
-                        html += `<div class="flex items-center gap-3"><span class="text-slate-400">${i18n('stepInput')}</span><code class="text-blue-400 font-mono text-lg">${step.value}</code><span class="text-slate-500">(${i18n('stepBase')} ${step.base}${balancedText})</span></div>`;
-                        break;
-                    case 'direct_mapping':
-                        html += `<div><div class="text-cyan-400 font-semibold mb-2">${i18n(step.descriptionKey)}</div><div class="grid grid-cols-3 gap-2 mt-2">${step.mappings.map(m => `<div class="bg-slate-800 p-2 rounded text-center font-mono text-sm"><span class="text-yellow-400">${m.nonaryDigit}</span><span class="text-slate-500 mx-2">→</span><span class="text-green-400">${m.ternaryPair}</span></div>`).join('')}</div>${step.result ? `<div class="mt-4 p-3 bg-slate-900 rounded font-mono"><span class="text-slate-400">${i18n('stepResult')} </span><span class="text-green-400 text-lg">${step.result}</span></div>` : ''}</div>`;
-                        break;
-                    case 'mapping':
-                        html += `<div><div class="text-cyan-400 font-semibold mb-2">${i18n(step.descriptionKey)}</div><div class="grid grid-cols-3 gap-2 mt-2">${step.mapping.map(m => `<div class="bg-slate-800 p-2 rounded text-center font-mono text-sm"><span class="text-yellow-400">${m.nonary || m.from}</span><span class="text-slate-500 mx-2">→</span><span class="text-green-400">${m.ternary || m.to}</span></div>`).join('')}</div></div>`;
-                        break;
-                    case 'grouping':
-                        html += `<div><div class="text-green-400 font-semibold mb-2">${i18n(step.descriptionKey)}</div><div class="flex gap-2 flex-wrap">${step.groups.map(g => `<div class="bg-slate-800 p-2 rounded text-center font-mono text-sm"><span class="text-green-400">${g.from}</span><span class="text-slate-500 mx-2">→</span><span class="text-yellow-400">${g.to}</span></div>`).join('')}</div></div>`;
-                        break;
-                    case 'balanced_conversion':
-                        html += `<div class="border-l-4 border-purple-500 pl-4"><div class="text-purple-400 font-semibold">${i18n(step.descriptionKey, step.args)}</div><div class="text-sm text-slate-400 mt-1">${step.args.from} → ${step.args.to}</div></div>`;
-                        break;
-                    case 'balanced_detail':
-                        html += `<div class="bg-purple-500/10 border border-purple-500/30 rounded-lg p-4"><div class="grid grid-cols-2 gap-4 mb-3"><div><span class="text-slate-400 text-sm">${i18n('stepOriginal')}</span><code class="block text-purple-400 font-mono text-lg mt-1">${step.original}</code></div><div><span class="text-slate-400 text-sm">${i18n('stepConverted')}</span><code class="block text-purple-300 font-mono text-lg mt-1">${step.converted}</code></div></div></div>`;
-                        break;
-                    case 'bridge_start':
-                        html += `<div class="bg-cyan-500/10 border-l-4 border-cyan-500 pl-4 py-2"><div class="text-cyan-400 font-semibold">${i18n(step.descriptionKey, step.args)}</div><div class="text-slate-400 text-sm mt-1 font-mono">${step.args.from} → ${step.args.to}</div></div>`;
-                        break;
-                    case 'start':
-                        html += `<div class="text-cyan-400 font-semibold">${i18n(step.descriptionKey, step.args)}<div class="text-sm text-slate-400 mt-1">${i18n(step.methodKey, step.args)}</div></div>`;
-                        break;
-                    case 'iteration':
-                        html += `<div class="font-mono text-sm"><div class="text-slate-300 text-xs mt-2 p-2 bg-slate-800 rounded">${step.formula}</div></div>`;
-                        break;
-                    case 'intermediate':
-                        html += `<div class="flex items-center gap-3"><i data-lucide="arrow-right" class="w-4 h-4 text-slate-500"></i><span class="text-slate-400">${i18n(step.descriptionKey, step.args)}:</span><code class="text-yellow-400 font-mono text-lg">${step.value}</code></div>`;
-                        break;
-                    case 'result':
-                        html += `<div class="flex items-center gap-3 bg-green-500/10 border border-green-500/30 rounded-lg p-4"><span class="text-green-400 font-semibold">${i18n('stepResult')}</span><code class="text-green-300 font-mono text-xl">${step.value}</code><span class="text-slate-500">(${i18n('stepBase')} ${step.base}${balancedText})</span></div>`;
-                        break;
-                    case 'error':
-                        // Handle both keyed errors and raw JS errors
-                        const errorMsg = step.messageKey ? i18n(step.messageKey, step.args) : step.message;
-                        html += `<div class="text-red-400 font-semibold">${errorMsg}</div>`;
-                        break;
+            const invertBalanced = (value, base) => value.split('').map(d => {
+                if (d === '+') return '-'; if (d === '-') return '+';
+                if (base === 9) {
+                    const invMap = { '1': 'Z', '2': 'Y', '3': 'X', '4': 'W', 'Z': '1', 'Y': '2', 'X': '3', 'W': '4', '0': '0' };
+                    return invMap[d] || d;
                 }
-                html += '</div>';
-            });
-            dom.stepsContainer.innerHTML = html;
-            dom.stepsContainerWrapper.classList.remove('hidden');
-        };
+                return d;
+            }).join('');
 
-        const renderAll = () => {
-            if (state.complexity) renderComplexity();
-            else dom.complexityBox.classList.add('hidden');
+            const balancedToStandard = (value, base) => {
+                const digits = value.split('').map(d => balancedDigits[base].toStandard[d]);
+                const isActuallyNegative = digits.find(d => d !== 0) < 0;
+                let procValue = isActuallyNegative ? invertBalanced(value, base) : value;
+                const procDigits = procValue.split('').map(d => balancedDigits[base].toStandard[d]);
+                let carry = 0, result = [];
+                for (let i = procDigits.length - 1; i >= 0; i--) {
+                    let val = procDigits[i] + carry;
+                    if (val < 0) { result.unshift(val + base); carry = -1; }
+                    else { result.unshift(val); carry = 0; }
+                }
+                while (result.length > 1 && result[0] === 0) result.shift();
+                if (result.length === 0) result.push(0);
+                let resultStr = result.join('');
+                if (isActuallyNegative) resultStr = '-' + resultStr;
+                return { value: resultStr, steps: [] };
+            };
 
-            if (state.conversionSteps.length > 0) {
-                renderQuickResult();
-                renderSteps();
-            } else {
-                dom.quickResultBox.classList.add('hidden');
-                dom.stepsContainerWrapper.classList.add('hidden');
-            }
-            lucide.createIcons();
-        };
+            const standardToBalanced = (value, base) => {
+                const digits = value.split('').map(Number);
+                const result = []; let carry = 0;
+                for (let i = digits.length - 1; i >= 0; i--) {
+                    let val = digits[i] + carry;
+                    let rem;
+                    if (val > Math.floor(base / 2)) { rem = val - base; carry = 1; }
+                    else { rem = val; carry = 0; }
+                    result.unshift(balancedDigits[base].fromStandard[rem.toString()]);
+                }
+                if (carry > 0) result.unshift(balancedDigits[base].fromStandard['1']);
+                while (result.length > 1 && result[0] === '0') result.shift();
+                return { value: result.join(''), steps: [] };
+            };
 
-        // --- EVENT LISTENERS ---
-        dom.inputValue.addEventListener('input', (e) => state.inputValue = e.target.value);
-        dom.sourceBase.addEventListener('change', (e) => {
-            const newBase = parseInt(e.target.value);
-            state.sourceBase = newBase;
-            if (newBase !== 3 && newBase !== 9) {
-                state.sourceBalanced = false;
-                dom.sourceBalanced.checked = false;
-            }
-            updateBalancedUI();
+            const convertAdjacentBases = (digits, fromBase, toBase) => {
+                if (Math.abs(fromBase - toBase) !== 1) throw new Error(`Adjacent only!`);
+                const result_digits = []; let current_digits = [...digits];
+                const isDec = toBase < fromBase; const divisor = isDec ? fromBase - 1 : fromBase + 1;
+                while (current_digits.length > 0 && (current_digits.length > 1 || current_digits[0] !== 0)) {
+                    const n = current_digits.length - 1; const a = [...current_digits].reverse();
+                    const b = [], c = []; c[n + 1] = 0;
+                    for (let i = n; i >= 0; i--) {
+                        const ai = a[i]; let q;
+                        if (isDec) { const sum = ai + c[i + 1]; q = Math.floor(sum / divisor); c[i] = sum % divisor; b[i] = c[i + 1] + q; }
+                        else { const diff = ai - c[i + 1]; q = Math.floor(diff / divisor); c[i] = diff - (q * divisor); b[i] = c[i + 1] + q; }
+                    }
+                    result_digits.unshift(c[0]); b.reverse();
+                    while (b.length > 1 && b[0] === 0) b.shift();
+                    if (b.length === 0) b.push(0); current_digits = b;
+                }
+                if (result_digits.length === 0) result_digits.push(0);
+                return { result: result_digits, steps: [] };
+            };
+
+            const convertViaPowerMapping = (digits, fromBase, toBase) => {
+                if (fromBase === 27 && toBase === 3) {
+                    const d3 = []; digits.forEach(d => { const t2 = Math.floor(d / 9), rem = d % 9, t1 = Math.floor(rem / 3), t0 = rem % 3; d3.push(t2, t1, t0); });
+                    while (d3.length > 1 && d3[0] === 0) d3.shift(); return { result: d3, steps: [] };
+                }
+                if (fromBase === 3 && toBase === 27) {
+                    const d3 = [...digits]; while (d3.length % 3 !== 0) d3.unshift(0);
+                    const d27 = []; for (let i = 0; i < d3.length; i += 3) d27.push(d3[i] * 9 + d3[i + 1] * 3 + d3[i + 2]);
+                    return { result: d27, steps: [] };
+                }
+                if (fromBase === 9 && toBase === 3) {
+                    const d3 = []; digits.forEach(d => d3.push(Math.floor(d / 3), d % 3));
+                    while (d3.length > 1 && d3[0] === 0) d3.shift(); return { result: d3, steps: [] };
+                }
+                if (fromBase === 3 && toBase === 9) {
+                    const d3 = [...digits]; if (d3.length % 2 !== 0) d3.unshift(0);
+                    const d9 = []; for (let i = 0; i < d3.length; i += 2) d9.push(d3[i] * 3 + d3[i + 1]);
+                    while (d9.length > 1 && d9[0] === 0) d9.shift(); return { result: d9, steps: [] };
+                }
+                return { result: [0], steps: [] };
+            };
+
+            const performConversion = () => {
+                try {
+                    const { sourceBase: sB, targetBase: tB, sourceBalanced: sBal, targetBalanced: tBal } = state;
+                    if (!valueIsValid(state.inputValue, sB, sBal)) throw new Error(i18n('errorInvalidInput', { chars: '0-9, A-Z' }));
+                    let pIn = state.inputValue, isNeg = false, allSteps = [];
+                    allSteps.push({ type: 'input', value: state.inputValue, base: sB, balanced: sBal });
+                    if (!sBal && pIn.startsWith('-')) { isNeg = true; pIn = pIn.slice(1); }
+                    if (sBal && (sB === 3 || sB === 9)) {
+                        const balConv = balancedToStandard(state.inputValue, sB); pIn = balConv.value;
+                        if (pIn.startsWith('-')) { isNeg = true; pIn = pIn.slice(1); }
+                    }
+                    const digits = []; pIn = pIn.toUpperCase();
+                    if (pIn.length > 1 && sB !== 27) pIn = pIn.replace(/^0+/, ''); if (pIn === '') pIn = '0';
+                    for (let char of pIn) digits.push(getDigitValue(char, sB));
+                    state.complexity = analyzeComplexity(sB, tB);
+                    let conversion; const diff = Math.abs(tB - sB);
+                    if (sB === tB) conversion = { result: digits, steps: [] };
+                    else if (diff === 1) conversion = convertAdjacentBases(digits, sB, tB);
+                    else if ((sB === 10 && tB === 3) || (sB === 3 && tB === 10)) {
+                        if (sB === 10) {
+                            const step1 = convertAdjacentBases(digits, 10, 9); const tPairs = [];
+                            step1.result.forEach(d => tPairs.push(Math.floor(d / 3), d % 3));
+                            while (tPairs.length > 1 && tPairs[0] === 0) tPairs.shift(); conversion = { result: tPairs, steps: [] };
+                        } else {
+                            const d3 = [...digits]; if (d3.length % 2 !== 0) d3.unshift(0);
+                            const d9 = []; for (let i = 0; i < d3.length; i += 2) d9.push(d3[i] * 3 + d3[i + 1]);
+                            conversion = convertAdjacentBases(d9, 9, 10);
+                        }
+                    } else if ((sB === 10 && tB === 2) || (sB === 2 && tB === 10)) {
+                        if (sB === 10) {
+                            const s1 = convertAdjacentBases(digits, 10, 9); const tD = [];
+                            s1.result.forEach(d => tD.push(Math.floor(d / 3), d % 3));
+                            while (tD.length > 1 && tD[0] === 0) tD.shift();
+                            conversion = convertAdjacentBases(tD, 3, 2);
+                        } else {
+                            const s1 = convertAdjacentBases(digits, 2, 3); const d3 = [...s1.result];
+                            if (d3.length % 2 !== 0) d3.unshift(0);
+                            const d9 = []; for (let i = 0; i < d3.length; i += 2) d9.push(d3[i] * 3 + d3[i + 1]);
+                            conversion = convertAdjacentBases(d9, 9, 10);
+                        }
+                    } else if ((sB === 9 && tB === 2) || (sB === 2 && tB === 9)) {
+                        if (sB === 9) {
+                            const tD = []; digits.forEach(d => tD.push(Math.floor(d / 3), d % 3));
+                            while (tD.length > 1 && tD[0] === 0) tD.shift(); conversion = convertAdjacentBases(tD, 3, 2);
+                        } else {
+                            const s1 = convertAdjacentBases(digits, 2, 3); const d3 = [...s1.result];
+                            if (d3.length % 2 !== 0) d3.unshift(0);
+                            const d9 = []; for (let i = 0; i < d3.length; i += 2) d9.push(d3[i] * 3 + d3[i + 1]);
+                            conversion = { result: d9, steps: [] };
+                        }
+                    } else if ((sB === 3 && tB === 9) || (sB === 9 && tB === 3)) conversion = convertViaPowerMapping(digits, sB, tB);
+                    else if ((sB === 27 && tB === 3) || (sB === 3 && tB === 27)) conversion = convertViaPowerMapping(digits, sB, tB);
+                    else if ((sB === 27 && tB === 9) || (sB === 9 && tB === 27)) {
+                        if (sB === 27) {
+                            const s1 = convertViaPowerMapping(digits, 27, 3), d3 = s1.result;
+                            if (d3.length % 2 !== 0) d3.unshift(0);
+                            const d9 = []; for (let i = 0; i < d3.length; i += 2) d9.push(d3[i] * 3 + d3[i + 1]);
+                            conversion = { result: d9, steps: [] };
+                        } else {
+                            const d3 = []; digits.forEach(d => d3.push(Math.floor(d / 3), d % 3));
+                            conversion = convertViaPowerMapping(d3, 3, 27);
+                        }
+                    } else if (sB === 27 && tB === 10) {
+                        const s1 = convertViaPowerMapping(digits, 27, 3), d3 = s1.result;
+                        if (d3.length % 2 !== 0) d3.unshift(0);
+                        const d9 = []; for (let i = 0; i < d3.length; i += 2) d9.push(d3[i] * 3 + d3[i + 1]);
+                        conversion = convertAdjacentBases(d9, 9, 10);
+                    } else if (sB === 10 && tB === 27) {
+                        const s1 = convertAdjacentBases(digits, 10, 9), d3 = [];
+                        s1.result.forEach(d => d3.push(Math.floor(d / 3), d % 3));
+                        conversion = convertViaPowerMapping(d3, 3, 27);
+                    } else if (sB === 27 && tB === 2) {
+                        const s1 = convertViaPowerMapping(digits, 27, 3); conversion = convertAdjacentBases(s1.result, 3, 2);
+                    } else if (sB === 2 && tB === 27) {
+                        const s1 = convertAdjacentBases(digits, 2, 3); conversion = convertViaPowerMapping(s1.result, 3, 27);
+                    } else throw new Error(i18n('errorNotOptimized', { from: sB, to: tB }));
+
+                    let resStr = formatBaseOutput(conversion.result, tB);
+                    if (isNeg && !tBal) resStr = '-' + resStr;
+                    if (tBal && (tB === 3 || tB === 9)) {
+                        const balConv = standardToBalanced(resStr, tB);
+                        let val = balConv.value; if (isNeg) val = invertBalanced(val, tB);
+                        resStr = val;
+                    }
+                    allSteps.push({ type: 'result', value: resStr, base: tB, balanced: tBal });
+                    state.conversionSteps = allSteps; renderAll();
+                } catch (e) { state.conversionSteps = [{ type: 'error', message: e.message }]; renderAll(); }
+            };
+
+            const valueIsValid = (val, base, balanced) => {
+                if (!val) return false;
+                if (balanced) { if (base === 3) return /^[+\-0]+$/.test(val); if (base === 9) return /^[WXYZ01234]+$/.test(val); }
+                if (base === 27) return /^-?[0123456789ABCDEFGHKMNPRTVXZ]+$/i.test(val) && val !== '-';
+                const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'.slice(0, base);
+                return new RegExp(`^-?[${chars}]+$`, 'i').test(val) && val !== '-';
+            };
+
+            const analyzeComplexity = (sB, tB) => {
+                const diff = Math.abs(tB - sB);
+                if (sB === tB) return { time: 'O(1)', space: 'O(1)', descriptionKey: 'descIdentity', efficiencyKey: 'effOptimal' };
+                if (diff === 1) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descQuadraticP', efficiencyKey: 'effOptimalQuadratic' };
+                if ((sB === 10 && tB === 3) || (sB === 3 && tB === 10)) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descBridgeNonary', efficiencyKey: 'effOptimal' };
+                if ((sB === 10 && tB === 2) || (sB === 2 && tB === 10)) return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descBridgeDouble', efficiencyKey: 'effOptimal' };
+                if ((sB === 27 && tB === 3) || (sB === 3 && tB === 27)) return { time: 'O(n)', space: 'O(n)', descriptionKey: 'descPowerMapping3', efficiencyKey: 'effLinear' };
+                if ((sB === 9 && tB === 3) || (sB === 3 && tB === 9)) return { time: 'O(n)', space: 'O(n)', descriptionKey: 'descPowerMapping2', efficiencyKey: 'effLinear' };
+                if ((sB === 27 && tB === 9) || (sB === 9 && tB === 27)) return { time: 'O(n)', space: 'O(n)', descriptionKey: 'descPowerMappingCompound', efficiencyKey: 'effLinear' };
+                return { time: 'O(n²)', space: 'O(n)', descriptionKey: 'descNotImplemented', efficiencyKey: 'effNotImplemented' };
+            };
+
+            const renderAll = () => {
+                if (state.complexity) renderComplexity(); else dom.complexityBox.classList.add('hidden');
+                if (state.conversionSteps.length > 0) { renderQuickResult(); renderSteps(); }
+                else { dom.quickResultBox.classList.add('hidden'); dom.stepsContainerWrapper.classList.add('hidden'); }
+                lucide.createIcons();
+            };
+
+            const renderComplexity = () => {
+                const { time, space, descriptionKey, efficiencyKey } = state.complexity;
+                const eff = i18n(efficiencyKey);
+                const effClass = (eff.includes(i18n('effOptimal')) || eff.includes(i18n('effLinear'))) ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400';
+                dom.complexityBox.innerHTML = `<h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><i data-lucide="info" class="w-5 h-5 text-cyan-400"></i>${i18n('complexityTitle')}</h2><div class="space-y-3"><div>Time: <code class="text-blue-400">${time}</code></div><div>Space: <code class="text-cyan-400">${space}</code></div><div class="mt-4 p-4 bg-slate-900/50 rounded-lg border border-slate-700 font-sm text-slate-300"><div>${i18n(descriptionKey)}</div><div class="inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold ${effClass}">${eff}</div></div></div>`;
+                dom.complexityBox.classList.remove('hidden');
+            };
+
+            const renderQuickResult = () => {
+                const step = state.conversionSteps.find(s => s.type === 'result');
+                if (!step) return dom.quickResultBox.classList.add('hidden');
+                dom.quickResultBox.innerHTML = `<h2 class="text-xl font-semibold mb-4 flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5 text-green-400"></i>${i18n('quickResultTitle')}</h2><div class="bg-green-500/10 border border-green-500/30 rounded-lg p-4 font-mono text-2xl text-green-300 break-all">${step.value}</div><div class="text-slate-400 text-xs text-right mt-2">${i18n('stepBase')} ${step.base}${step.balanced ? ' (' + i18n('stepBalanced') + ')' : ''}</div>`;
+                dom.quickResultBox.classList.remove('hidden');
+            };
+
+            const renderSteps = () => {
+                let h = '';
+                state.conversionSteps.forEach(s => {
+                    h += '<div class="bg-slate-900/50 p-4 border border-slate-700 rounded-lg">';
+                    if (s.type === 'input') h += `Input: <code class="text-blue-400">${s.value}</code> (Base ${s.base})`;
+                    else if (s.type === 'result') h += `Result: <code class="text-green-400 font-bold">${s.value}</code> (Base ${s.base})`;
+                    else if (s.type === 'error') h += `<div class="text-red-400">${s.message}</div>`;
+                    h += '</div>';
+                });
+                dom.stepsContainer.innerHTML = h; dom.stepsContainerWrapper.classList.remove('hidden');
+            };
+
+            dom.inputValue.addEventListener('input', (e) => state.inputValue = e.target.value);
+            dom.sourceBase.addEventListener('change', (e) => { state.sourceBase = parseInt(e.target.value); updateUI(); });
+            dom.targetBase.addEventListener('change', (e) => { state.targetBase = parseInt(e.target.value); updateUI(); });
+            dom.sourceBalanced.addEventListener('change', (e) => { state.sourceBalanced = e.target.checked; updateUI(); });
+            dom.targetBalanced.addEventListener('change', (e) => state.targetBalanced = e.target.checked);
+            dom.convertButton.addEventListener('click', performConversion);
+            dom.langSelector.addEventListener('change', (e) => setLang(e.target.value));
+
+            const updateUI = () => {
+                dom.sourceBalancedWrapper.classList.toggle('hidden', state.sourceBase !== 3 && state.sourceBase !== 9);
+                dom.targetBalancedWrapper.classList.toggle('hidden', state.targetBase !== 3 && state.targetBase !== 9);
+                dom.heptavintimalHelp.classList.toggle('hidden', state.sourceBase !== 27);
+            };
+
+            const init = () => {
+                dom.langSelector.innerHTML = '<option value="en">English</option><option value="pt">Português</option>';
+                const bs = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 27]; let opts = '';
+                bs.forEach(b => opts += `<option value="${b}">Base ${b}${b === 27 ? ' (Heptavintimal)' : ''}</option>`);
+                dom.sourceBase.innerHTML = opts; dom.targetBase.innerHTML = opts;
+                dom.inputValue.value = state.inputValue; dom.sourceBase.value = state.sourceBase; dom.targetBase.value = state.targetBase;
+                setLang(navigator.language.startsWith('pt') ? 'pt' : 'en'); updateUI();
+            };
+            init();
         });
-        dom.targetBase.addEventListener('change', (e) => {
-            const newBase = parseInt(e.target.value);
-            state.targetBase = newBase;
-            if (newBase !== 3 && newBase !== 9) {
-                state.targetBalanced = false;
-                dom.targetBalanced.checked = false;
-            }
-            updateBalancedUI();
-        });
-        dom.sourceBalanced.addEventListener('change', (e) => {
-            state.sourceBalanced = e.target.checked;
-            updateBalancedUI();
-        });
-        dom.targetBalanced.addEventListener('change', (e) => state.targetBalanced = e.target.checked);
-        dom.convertButton.addEventListener('click', performConversion);
-        dom.langSelector.addEventListener('change', (e) => setLang(e.target.value));
-
-        // --- INITIALIZATION ---
-        const init = () => {
-            // Populate language selector
-            dom.langSelector.innerHTML = `
-                    <option value="en">English</option>
-                    <option value="pt">Português</option>
-                `;
-
-            // Populate base selectors
-            const bases = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 27];
-            let optionsHtml = '';
-            bases.forEach(b => {
-                let label = `Base ${b}`;
-                if (b===27) label += " (Heptavintimal)";
-                optionsHtml += `<option value="${b}">${label}</option>`;
-            });
-            dom.sourceBase.innerHTML = optionsHtml;
-            dom.targetBase.innerHTML = optionsHtml;
-
-            // Set initial values from state
-            dom.inputValue.value = state.inputValue;
-            dom.sourceBase.value = state.sourceBase;
-            dom.targetBase.value = state.targetBase;
-
-            // Set initial language from URL (or default)
-            const initialLang = getInitialLang();
-            setLang(initialLang);
-
-            // Initial UI setup (must run AFTER setLang)
-            updateBalancedUI();
-            lucide.createIcons();
-        };
-
-        init();
-    });
-</script>
+    </script>
 </body>
+
 </html>
