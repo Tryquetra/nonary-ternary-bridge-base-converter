@@ -10,8 +10,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Allow indexing by search engines -->
     <meta name="robots" content="index, follow">
-    <!-- Título será atualizado por JS -->
-    <title data-i18n-key="pageTitle">Nonary Arithmetic - Base Converter</title>
+    
+    <!-- SEO & AEO Meta Tags -->
+    <title data-i18n-key="pageTitle">Nonary Arithmetic - Advanced Base Converter (Base 3, 9, 27 & Balanced)</title>
+    <meta name="description" content="Interactive base converter optimizing for Nonary (Base 9), Balanced Ternary (Base 3), and Heptavintimal (Base 27). Visualize p→p±1 algorithms and power mappings step-by-step.">
+    <meta name="keywords" content="nonary arithmetic, base converter, balanced ternary, heptavintimal, base 27, base 9, base 3, base conversion algorithm, jones alphabet, symmetric nonary, calculator, algorithm visualization">
+    <meta name="author" content="Robson Cassiano">
+    <link rel="canonical" href="https://tryquetra.github.io/nonary-ternary-bridge-base-converter/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tryquetra.github.io/nonary-ternary-bridge-base-converter/">
+    <meta property="og:title" content="Nonary Arithmetic - Advanced Base Converter">
+    <meta property="og:description" content="Convert and visualize algorithms between Base 3, 9, 27 and Decimal. Features Balanced Ternary and Heptavintimal systems.">
+    <meta property="og:image" content="https://tryquetra.github.io/nonary-ternary-bridge-base-converter/icon.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://tryquetra.github.io/nonary-ternary-bridge-base-converter/">
+    <meta property="twitter:title" content="Nonary Arithmetic - Advanced Base Converter">
+    <meta property="twitter:description" content="Convert and visualize algorithms between Base 3, 9, 27 and Decimal. Features Balanced Ternary and Heptavintimal systems.">
+    <meta property="twitter:image" content="https://tryquetra.github.io/nonary-ternary-bridge-base-converter/icon.png">
+
+    <!-- Structured Data (JSON-LD) for AEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Nonary Arithmetic Base Converter",
+          "url": "https://tryquetra.github.io/nonary-ternary-bridge-base-converter/",
+          "description": "A specialized base converter for Nonary, Balanced Ternary, and Heptavintimal systems, featuring step-by-step algorithm visualization.",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "Any",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "author": {
+            "@type": "Person",
+            "name": "Robson Cassiano"
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is Balanced Ternary?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Balanced Ternary is a non-standard positional numeral system useful for comparison logic. It uses a base of 3 and digits -1, 0, and +1 (often simplified to -, 0, +)."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is Heptavintimal (Base 27)?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Heptavintimal is base 27. It allows for efficient packing of 3 ternary digits (trits) into a single character. This converter uses Jones' alphabet for its representation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the Nonary Bridge work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The Nonary Bridge optimizes conversion between Base 10 and Base 3 by using Base 9 as an intermediate step. Since 9 is a power of 3, converting between 9 and 3 is linear O(d), reducing the computational cost compared to direct conversion."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+
     <!-- PWA manifest and theme color -->
     <link rel="manifest" href="site.webmanifest">
     <meta name="google-site-verification" content="ekiCj-BYrs6PxWFgSAtehtlDp01duFf2BDbmR1mNcPU" />
@@ -257,7 +332,7 @@
     const translations = {
         en: {
             // Meta
-            pageTitle: "Nonary Arithmetic - Base Converter",
+            pageTitle: "Nonary Arithmetic - Advanced Base Converter (Base 3, 9, 27 & Balanced)",
 
             // Header
             mainTitle: "Nonary Arithmetic",
@@ -370,7 +445,7 @@
         },
         pt: {
             // Meta
-            pageTitle: "Aritmética Nonária - Conversor de Base",
+            pageTitle: "Aritmética Nonária - Conversor Avançado (Base 3, 9, 27 & Balanceada)",
 
             // Header
             mainTitle: "Aritmética Nonária",
